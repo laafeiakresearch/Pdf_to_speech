@@ -24,7 +24,6 @@
         .mobile-header h1{font-size:.88em;font-weight:800;background:linear-gradient(135deg,#6c63ff,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex:1;text-align:center;}
         .mic-btn{width:36px;height:36px;border-radius:50%;border:none;background:linear-gradient(135deg,#6c63ff,#00e5ff);color:white;font-size:1em;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(108,99,255,.4);transition:transform .2s;}
         .mic-btn:active{transform:scale(.9);}
-
         .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:2px solid rgba(108,99,255,.3);z-index:500;height:var(--nav-h);padding-bottom:env(safe-area-inset-bottom,0px);}
         .bottom-nav-tabs{display:flex;height:100%;}
         .nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--muted);font-size:.68em;font-weight:700;border:none;background:none;font-family:'Inter',sans-serif;transition:color .2s;padding:6px 4px;}
@@ -47,7 +46,6 @@
         .control-group label{display:block;font-size:.71em;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
         .control-group select{width:100%;background:var(--card2);border:1px solid rgba(108,99,255,.3);border-radius:10px;color:var(--text);padding:10px 11px;font-size:.87em;font-family:'Inter',sans-serif;cursor:pointer;outline:none;min-height:44px;}
 
-        /* ── PERSONA GRID ── */
         .persona-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
         .persona-card{background:var(--card2);border:2px solid rgba(108,99,255,.18);border-radius:11px;padding:8px 4px;cursor:pointer;text-align:center;transition:all .2s;position:relative;min-height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
         .persona-card:active{transform:scale(.93);}
@@ -59,16 +57,17 @@
         .persona-card.active .pb{background:var(--primary);color:white;}
         .persona-section{font-size:.65em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin:8px 0 5px;padding-left:2px;}
 
-        /* ── SINGLE / NO VOICE CARDS ── */
+        /* Single voice / no voice cards */
         .single-voice-card{background:var(--card2);border:2px solid rgba(108,99,255,.28);border-radius:14px;padding:14px;text-align:center;}
         .single-voice-card .sv-icon{font-size:2em;margin-bottom:6px;}
         .single-voice-card .sv-name{font-size:.9em;font-weight:700;color:var(--accent);margin-bottom:3px;}
         .single-voice-card .sv-desc{font-size:.74em;color:var(--muted);line-height:1.4;}
         .single-voice-card .sv-badge{display:inline-block;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.3);color:var(--accent);font-size:.65em;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:6px;}
         .no-voice-card{background:rgba(255,100,100,.06);border:1px solid rgba(255,100,100,.2);border-radius:12px;padding:12px;text-align:center;font-size:.78em;color:#ff8a80;line-height:1.5;}
-        /* Loading state */
-        .voices-loading{text-align:center;padding:18px 0;color:var(--muted);font-size:.82em;}
-        .voices-loading .spin{display:inline-block;animation:spin 1s linear infinite;font-size:1.3em;margin-bottom:6px;}
+
+        /* Voice loading state */
+        .voices-loading{background:rgba(108,99,255,.08);border:1px dashed rgba(108,99,255,.3);border-radius:12px;padding:16px;text-align:center;color:var(--muted);font-size:.82em;}
+        .voices-loading .spin{display:inline-block;animation:spin 1s linear infinite;font-size:1.2em;margin-bottom:6px;}
         @keyframes spin{to{transform:rotate(360deg)}}
 
         .slider-row{display:flex;align-items:center;gap:8px;}
@@ -77,7 +76,6 @@
         .slider-val{font-size:.79em;color:var(--primary);font-weight:600;width:34px;text-align:right;}
         .test-row{display:flex;gap:7px;margin-top:10px;}
         .test-row input{flex:1;background:var(--card2);border:1px solid rgba(108,99,255,.3);border-radius:10px;color:var(--text);padding:10px 11px;font-size:.87em;font-family:'Inter',sans-serif;outline:none;min-width:0;min-height:44px;}
-
         .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 14px;border-radius:25px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.86em;font-weight:600;transition:all .2s;white-space:nowrap;min-height:44px;}
         .btn-primary{background:linear-gradient(135deg,#6c63ff,#5a52d5);color:white;box-shadow:0 3px 14px rgba(108,99,255,.4);}
         .btn-primary:active{transform:scale(.95);}
@@ -118,38 +116,20 @@
         .textLayer span.clicked{background:rgba(0,229,255,.4)!important;animation:wordPop .3s ease;}
         @keyframes wordPop{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 
-        .history-panel{position:sticky;top:16px;}
-        .history-list{display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 180px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--primary) transparent;}
-        .history-chip{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:10px 12px;font-size:.83em;cursor:pointer;transition:all .2s;color:var(--text);display:flex;align-items:center;gap:6px;word-break:break-word;min-height:44px;}
-        .history-chip:hover{background:rgba(108,99,255,.3);}
-        .no-history{color:var(--muted);font-size:.82em;text-align:center;padding:26px 0;}
-        .engine-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:.71em;font-weight:700;margin-top:9px;}
-        .engine-tag.ok{background:rgba(0,200,83,.12);color:var(--success);border:1px solid rgba(0,200,83,.3);}
-        .engine-tag.warn{background:rgba(255,193,7,.12);color:#ffc107;border:1px solid rgba(255,193,7,.3);}
-
         .lang-preview-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.28);border-radius:20px;padding:5px 12px;font-size:.75em;color:var(--accent);font-weight:600;margin-top:8px;width:100%;justify-content:center;min-height:32px;word-break:break-word;text-align:center;line-height:1.3;}
 
-        /* ══ MOBILE SELECTION CAPTION ══ */
-        #m-sel-caption{
-            display:none;position:fixed;left:50%;transform:translateX(-50%);
-            bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 10px);
-            background:var(--card);border:2px solid var(--primary);
-            border-radius:18px;padding:10px 14px;
-            z-index:900;max-width:92vw;width:340px;
-            box-shadow:0 8px 32px rgba(108,99,255,.55);
-            animation:selIn .2s ease;
-        }
+        /* Selection caption */
+        #m-sel-caption{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 10px);background:var(--card);border:2px solid var(--primary);border-radius:18px;padding:10px 14px;z-index:900;max-width:92vw;width:340px;box-shadow:0 8px 32px rgba(108,99,255,.55);animation:selIn .2s ease;}
         #m-sel-caption.show{display:block;}
         @keyframes selIn{from{transform:translateX(-50%) translateY(14px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
         .sel-cap-words{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;max-height:80px;overflow-y:auto;padding:6px 8px;background:rgba(108,99,255,.07);border-radius:10px;border:1px solid rgba(108,99,255,.18);}
         .sel-word-chip{background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.25);color:var(--text);border-radius:20px;padding:3px 9px;font-size:.78em;font-weight:600;cursor:pointer;transition:all .15s;}
-        .sel-word-chip:active,.sel-word-chip.speaking{background:var(--primary);color:white;border-color:var(--primary);transform:scale(1.08);}
+        .sel-word-chip:active,.sel-word-chip.speaking{background:var(--primary);color:white;border-color:var(--primary);}
         .sel-cap-btns{display:flex;gap:7px;}
 
-        /* ══ DESKTOP SELECTION BAR ══ */
         #selection-bar{display:none;position:fixed;left:50%;transform:translateX(-50%);top:80px;background:var(--card);border:1px solid rgba(108,99,255,.4);border-radius:40px;padding:9px 14px;gap:9px;align-items:center;box-shadow:0 8px 36px rgba(0,0,0,.5);z-index:800;max-width:90vw;}
         #selection-bar.visible{display:flex;}
-        .d-word-chips{display:flex;flex-wrap:wrap;gap:5px;max-width:340px;}
+        .d-word-chips{display:flex;flex-wrap:wrap;gap:5px;max-width:300px;}
         .d-word-chip{background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.25);color:var(--text);border-radius:20px;padding:3px 10px;font-size:.8em;font-weight:600;cursor:pointer;transition:all .15s;}
         .d-word-chip:hover,.d-word-chip.speaking{background:var(--primary);color:white;}
 
@@ -186,6 +166,15 @@
         .activate-banner{background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(0,229,255,.08));border:1px solid rgba(108,99,255,.3);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center;}
         .activate-banner p{font-size:.8em;color:var(--muted);margin-bottom:10px;line-height:1.5;}
 
+        .history-panel{position:sticky;top:16px;}
+        .history-list{display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 180px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--primary) transparent;}
+        .history-chip{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:10px 12px;font-size:.83em;cursor:pointer;transition:all .2s;color:var(--text);display:flex;align-items:center;gap:6px;word-break:break-word;min-height:44px;}
+        .history-chip:hover{background:rgba(108,99,255,.3);}
+        .no-history{color:var(--muted);font-size:.82em;text-align:center;padding:26px 0;}
+        .engine-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:.71em;font-weight:700;margin-top:9px;flex-wrap:wrap;}
+        .engine-tag.ok{background:rgba(0,200,83,.12);color:var(--success);border:1px solid rgba(0,200,83,.3);}
+        .engine-tag.warn{background:rgba(255,193,7,.12);color:#ffc107;border:1px solid rgba(255,193,7,.3);}
+
         @media(max-width:768px){
             .app-layout{display:none;}
             .mobile-header{display:flex;}
@@ -200,7 +189,6 @@
 </head>
 <body>
 
-<!-- ══ CONTACT MODAL ══ -->
 <div class="modal-overlay" id="contact-modal">
     <div class="modal-box">
         <span class="modal-mic-icon">🎤</span>
@@ -220,7 +208,6 @@
     </div>
 </div>
 
-<!-- ══ MOBILE HEADER ══ -->
 <div class="mobile-header">
     <button class="mic-btn" id="m-mic-btn">🎤</button>
     <h1>PDF Pronunciation Pro</h1>
@@ -228,7 +215,6 @@
 </div>
 <div id="m-toast"></div>
 
-<!-- ══ MOBILE SELECTION CAPTION ══ -->
 <div id="m-sel-caption">
     <div class="sel-cap-words" id="m-sel-words"></div>
     <div class="sel-cap-btns">
@@ -237,18 +223,15 @@
     </div>
 </div>
 
-<!-- ══ MOBILE PAGE 1: VOICE ══ -->
 <div class="mobile-page active" id="m-page-settings">
     <div class="activate-banner" id="m-activate-banner">
-        <p>🎙️ Activate voice engine first, then pick language. Then go to the Reader tab.</p>
+        <p>🎙️ Tap Activate — voices load after first interaction. Then pick language & go to Reader.</p>
         <button class="btn btn-primary" id="m-btn-activate2" style="width:100%;justify-content:center;">🔊 Activate Voice Engine</button>
     </div>
     <div class="card" style="margin-bottom:10px;">
         <div class="card-title">🎭 Voice Persona</div>
-        <div id="m-persona-container">
-            <div class="voices-loading"><div class="spin">⚙️</div><br>Loading voices…</div>
-        </div>
-        <div id="m-engine-tag" class="engine-tag warn">🟡 Tap Activate above first</div>
+        <div id="m-persona-container"><div class="voices-loading"><div class="spin">⏳</div><br>Loading voices…</div></div>
+        <div id="m-engine-tag" class="engine-tag warn">🟡 Tap Activate first</div>
     </div>
     <div class="card" style="margin-bottom:10px;">
         <div class="card-title">🌐 Language</div>
@@ -288,7 +271,7 @@
         <div class="card-title">🎛️ Fine Tuning</div>
         <div class="control-group">
             <label>🚀 Speed</label>
-            <div class="slider-row"><input type="range" id="m-rate-slider" min="0.5" max="1.8" step="0.05" value="1"><span class="slider-val" id="m-rate-val">1.00</span></div>
+            <div class="slider-row"><input type="range" id="m-rate-slider" min="0.5" max="2" step="0.05" value="1"><span class="slider-val" id="m-rate-val">1.00</span></div>
         </div>
         <div class="control-group">
             <label>🎵 Pitch</label>
@@ -306,7 +289,6 @@
     <div style="height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 8px);"></div>
 </div>
 
-<!-- ══ MOBILE PAGE 2: READER ══ -->
 <div class="mobile-page" id="m-page-reader">
     <div id="m-sel-hint" style="display:none;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.25);border-radius:10px;padding:7px 12px;margin-bottom:8px;font-size:.75em;color:var(--muted);text-align:center;">
         👆 <strong style="color:var(--primary);">Tap</strong> = speak word &nbsp;|&nbsp; <strong style="color:var(--accent);">Long-press drag</strong> = select sentence
@@ -338,14 +320,13 @@
     <div class="pdf-outer mobile" id="m-pdf-outer">
         <div class="pdf-inner" id="m-pdf-inner">
             <div style="color:var(--muted);text-align:center;padding:50px 16px;font-size:.9em;">
-                📄 Go to <strong style="color:var(--primary);">🎛️ Voice</strong> tab first,<br>then upload a PDF here.
+                📄 Go to <strong style="color:var(--primary);">🎛️ Voice</strong> tab first to activate,<br>then upload a PDF here.
             </div>
         </div>
     </div>
     <div style="height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 8px);"></div>
 </div>
 
-<!-- ══ BOTTOM NAV ══ -->
 <div class="bottom-nav">
     <div class="bottom-nav-tabs">
         <button class="nav-tab active" data-tab="m-page-settings"><span class="ti">🎛️</span>Voice</button>
@@ -353,7 +334,7 @@
     </div>
 </div>
 
-<!-- ══ DESKTOP LAYOUT ══ -->
+<!-- DESKTOP -->
 <div class="app-layout">
     <div class="left-panel">
         <div class="app-header">
@@ -363,10 +344,8 @@
         </div>
         <div class="card">
             <div class="card-title">🎭 Voice Persona</div>
-            <div id="d-persona-container">
-                <div class="voices-loading"><div class="spin">⚙️</div><br>Loading voices…</div>
-            </div>
-            <div id="d-engine-tag" class="engine-tag warn" style="margin-top:10px;">⏳ Loading voices…</div>
+            <div id="d-persona-container"><div class="voices-loading"><div class="spin">⏳</div><br>Loading voices…</div></div>
+            <div id="d-engine-tag" class="engine-tag warn" style="margin-top:10px;">🟡 Loading voices…</div>
         </div>
         <div class="card">
             <div class="card-title">🌐 Language & Tuning</div>
@@ -400,11 +379,11 @@
                     <option value="ur">🇵🇰 Urdu</option><option value="vi">🇻🇳 Vietnamese</option>
                     <option value="zh">🇨🇳 Chinese</option><option value="zu">🇿🇦 Zulu</option>
                 </select>
-                <div class="lang-preview-pill" id="d-lang-pill">💬 "Hello! How are you today?"</div>
+                <div class="lang-preview-pill" id="d-lang-pill" style="margin-top:8px;">💬 "Hello! How are you today?"</div>
             </div>
             <div class="control-group">
                 <label>🚀 Speed</label>
-                <div class="slider-row"><input type="range" id="rate-slider" min="0.5" max="1.8" step="0.05" value="1"><span class="slider-val" id="rate-val">1.00</span></div>
+                <div class="slider-row"><input type="range" id="rate-slider" min="0.5" max="2" step="0.05" value="1"><span class="slider-val" id="rate-val">1.00</span></div>
             </div>
             <div class="control-group">
                 <label>🎵 Pitch</label>
@@ -434,7 +413,7 @@
                     <div class="page-badge" id="page-info">Page 1/1</div>
                     <button class="btn btn-secondary" id="btn-next">Next ➡</button>
                 </div>
-                <span style="color:var(--muted);font-size:.79em;">💡 Click = word &nbsp;|&nbsp; Drag select = sentence chips</span>
+                <span style="color:var(--muted);font-size:.79em;">💡 Click = word &nbsp;|&nbsp; Drag-select = sentence caption</span>
             </div>
         </div>
         <div class="status-bar" id="status"></div>
@@ -450,15 +429,13 @@
     </div>
 </div>
 
-<!-- Desktop selection bar with word chips -->
 <div id="selection-bar">
-    <span style="font-size:.83em;color:var(--muted);flex-shrink:0;">🖊️</span>
+    <span style="font-size:.83em;color:var(--muted);">🖊️</span>
     <div class="d-word-chips" id="d-word-chips"></div>
     <button class="btn btn-success" id="btn-speak-sel" style="padding:8px 14px;min-height:38px;flex-shrink:0;">▶ All</button>
     <button class="btn btn-secondary" id="btn-dismiss-sel" style="padding:8px 10px;min-height:38px;flex-shrink:0;">✕</button>
 </div>
 
-<!-- Desktop speaking bubble -->
 <div id="speak-bubble">
     <div class="bl" id="bubble-label">🔊 Speaking</div>
     <div class="bw" id="bubble-word">—</div>
@@ -470,101 +447,69 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════
-// LANGUAGE SAMPLES — one sentence per language
-// ══════════════════════════════════════════════════════
-const LANG_SAMPLES={
-    en:"Hello! How are you today?",af:"Hallo! Hoe gaan dit vandag met jou?",
-    ar:"مرحباً! كيف حالك اليوم؟",bg:"Здравейте! Как сте днес?",
-    bn:"হ্যালো! আজ আপনি কেমন আছেন?",ca:"Hola! Com estàs avui?",
-    cs:"Ahoj! Jak se dnes máš?",da:"Hej! Hvordan har du det i dag?",
-    de:"Hallo! Wie geht es dir heute?",el:"Γεια σου! Πώς είσαι σήμερα;",
-    es:"¡Hola! ¿Cómo estás hoy?",fi:"Hei! Miten voit tänään?",
-    fr:"Bonjour! Comment allez-vous aujourd'hui?",gu:"હેલો! આજે તમે કેમ છો?",
-    he:"שלום! איך אתה היום?",hi:"नमस्ते! आज आप कैसे हैं?",
-    hr:"Bok! Kako si danas?",hu:"Szia! Hogy vagy ma?",
-    id:"Halo! Apa kabar hari ini?",it:"Ciao! Come stai oggi?",
-    ja:"こんにちは！今日はお元気ですか？",kn:"ಹಲೋ! ಇಂದು ನೀವು ಹೇಗಿದ್ದೀರಿ?",
-    ko:"안녕하세요! 오늘 어떻게 지내세요?",lt:"Labas! Kaip šiandien jautiesi?",
-    lv:"Sveiki! Kā jums šodien iet?",ml:"ഹലോ! ഇന്ന് നിങ്ങൾക്ക് എങ്ങനെ ഉണ്ട്?",
-    mr:"नमस्कार! आज तुम्ही कसे आहात?",ms:"Helo! Apa khabar hari ini?",
-    nl:"Hallo! Hoe gaat het vandaag met je?",nb:"Hei! Hvordan har du det i dag?",
-    pa:"ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਅੱਜ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ?",pl:"Cześć! Jak się dzisiaj czujesz?",
-    pt:"Olá! Como você está hoje?",ro:"Bună ziua! Cum ești azi?",
-    ru:"Привет! Как ты сегодня?",sk:"Ahoj! Ako sa dnes máš?",
-    sl:"Pozdravljeni! Kako ste danes?",sq:"Përshëndetje! Si jeni sot?",
-    sr:"Здраво! Како си данас?",sv:"Hej! Hur mår du idag?",
-    sw:"Habari! Habari za leo?",ta:"வணக்கம்! இன்று நீங்கள் எப்படி இருக்கிறீர்கள்?",
-    te:"హలో! మీరు ఈ రోజు ఎలా ఉన్నారు?",th:"สวัสดี! วันนี้คุณเป็นอย่างไรบ้าง?",
-    tl:"Kamusta! Kumusta ka ngayon?",tr:"Merhaba! Bugün nasılsın?",
-    uk:"Привіт! Як ти сьогодні?",ur:"ہیلو! آج آپ کیسے ہیں؟",
-    vi:"Xin chào! Hôm nay bạn khỏe không?",zh:"你好！你今天怎么样？",zu:"Sawubona! Unjani namuhla?"
-};
+// ══ LANGUAGE SAMPLES ══
+const LANG_SAMPLES={en:"Hello! How are you today?",af:"Hallo! Hoe gaan dit vandag met jou?",ar:"مرحباً! كيف حالك اليوم؟",bg:"Здравейте! Как сте днес?",bn:"হ্যালো! আজ আপনি কেমন আছেন?",ca:"Hola! Com estàs avui?",cs:"Ahoj! Jak se dnes máš?",da:"Hej! Hvordan har du det i dag?",de:"Hallo! Wie geht es dir heute?",el:"Γεια σου! Πώς είσαι σήμερα;",es:"¡Hola! ¿Cómo estás hoy?",fi:"Hei! Miten voit tänään?",fr:"Bonjour! Comment allez-vous aujourd'hui?",gu:"હેલો! આજે તમે કેમ છો?",he:"שלום! איך אתה היום?",hi:"नमस्ते! आज आप कैसे हैं?",hr:"Bok! Kako si danas?",hu:"Szia! Hogy vagy ma?",id:"Halo! Apa kabar hari ini?",it:"Ciao! Come stai oggi?",ja:"こんにちは！今日はお元気ですか？",kn:"ಹಲೋ! ಇಂದು ನೀವು ಹೇಗಿದ್ದೀರಿ?",ko:"안녕하세요! 오늘 어떻게 지내세요?",lt:"Labas! Kaip šiandien jautiesi?",lv:"Sveiki! Kā jums šodien iet?",ml:"ഹലോ! ഇന്ന് നിങ്ങൾക്ക് എങ്ങനെ ഉണ്ട്?",mr:"नमस्कार! आज तुम्ही कसे आहात?",ms:"Helo! Apa khabar hari ini?",nl:"Hallo! Hoe gaat het vandaag met je?",nb:"Hei! Hvordan har du det i dag?",pa:"ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਅੱਜ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ?",pl:"Cześć! Jak się dzisiaj czujesz?",pt:"Olá! Como você está hoje?",ro:"Bună ziua! Cum ești azi?",ru:"Привет! Как ты сегодня?",sk:"Ahoj! Ako sa dnes máš?",sl:"Pozdravljeni! Kako ste danes?",sq:"Përshëndetje! Si jeni sot?",sr:"Здраво! Како си данас?",sv:"Hej! Hur mår du idag?",sw:"Habari! Habari za leo?",ta:"வணக்கம்! இன்று நீங்கள் எப்படி இருக்கிறீர்கள்?",te:"హలో! మీరు ఈ రోజు ఎలా ఉన్నారు?",th:"สวัสดี! วันนี้คุณเป็นอย่างไรบ้าง?",tl:"Kamusta! Kumusta ka ngayon?",tr:"Merhaba! Bugün nasılsın?",uk:"Привіт! Як ти сьогодні?",ur:"ہیلو! آج آپ کیسے ہیں؟",vi:"Xin chào! Hôm nay bạn khỏe không?",zh:"你好！你今天怎么样？",zu:"Sawubona! Unjani namuhla?"};
 
-// ══════════════════════════════════════════════════════
-// BCP-47 LANGUAGE CODES
-// ══════════════════════════════════════════════════════
-const LANG_BCP={
-    en:'en-US',af:'af',ar:'ar',bg:'bg',bn:'bn',ca:'ca',cs:'cs',da:'da',
-    de:'de-DE',el:'el',es:'es-ES',fi:'fi',fr:'fr-FR',gu:'gu',he:'he',
-    hi:'hi-IN',hr:'hr',hu:'hu',id:'id',it:'it-IT',ja:'ja-JP',kn:'kn',
-    ko:'ko-KR',lt:'lt',lv:'lv',ml:'ml',mr:'mr',ms:'ms',nl:'nl-NL',nb:'nb',
-    pa:'pa',pl:'pl-PL',pt:'pt-BR',ro:'ro',ru:'ru-RU',sk:'sk',sl:'sl',
-    sq:'sq',sr:'sr',sv:'sv-SE',sw:'sw',ta:'ta-IN',te:'te-IN',th:'th',
-    tl:'tl',tr:'tr',uk:'uk',ur:'ur',vi:'vi',zh:'zh-CN',zu:'zu'
-};
+const LANG_BCP={en:'en-US',af:'af',ar:'ar',bg:'bg',bn:'bn',ca:'ca',cs:'cs',da:'da',de:'de-DE',el:'el',es:'es-ES',fi:'fi',fr:'fr-FR',gu:'gu',he:'he',hi:'hi-IN',hr:'hr',hu:'hu',id:'id',it:'it-IT',ja:'ja-JP',kn:'kn',ko:'ko-KR',lt:'lt',lv:'lv',ml:'ml',mr:'mr',ms:'ms',nl:'nl-NL',nb:'nb',pa:'pa',pl:'pl-PL',pt:'pt-BR',ro:'ro',ru:'ru-RU',sk:'sk',sl:'sl',sq:'sq',sr:'sr',sv:'sv-SE',sw:'sw',ta:'ta-IN',te:'te-IN',th:'th',tl:'tl',tr:'tr',uk:'uk',ur:'ur',vi:'vi',zh:'zh-CN',zu:'zu'};
 
-// ══════════════════════════════════════════════════════
-// ENGLISH PERSONA GROUPS (shown only when EN voices available)
-// ══════════════════════════════════════════════════════
+// ── PERSONA DEFINITIONS ──
+// pitch/rate are ABSOLUTE values (not multipliers) → same behaviour everywhere
 const EN_PERSONA_GROUPS=[
     {label:'👤 Natural Male',personas:[
-        {id:'oliver',  emoji:'👨‍💼',name:'Oliver',  desc:'Calm Pro',     pitch:0.88,rate:0.97,vol:1.0,kw:['daniel','david','oliver','thomas','mark','reed']},
-        {id:'marcus',  emoji:'🎙️', name:'Marcus',  desc:'Broadcaster',  pitch:0.82,rate:1.02,vol:1.0,kw:['alex','google uk','en-gb']},
-        {id:'james',   emoji:'👨',  name:'James',   desc:'Deep Warm',    pitch:0.75,rate:0.93,vol:1.0,kw:['james','ralph','fred','arthur']},
-        {id:'leo',     emoji:'🧑‍🎓',name:'Leo',     desc:'Young Clear',  pitch:0.95,rate:1.08,vol:1.0,kw:['lee','leon']},
+        {id:'oliver',  emoji:'👨‍💼',name:'Oliver',  desc:'Calm Pro',     pitch:0.9, rate:0.95,vol:1.0,
+         kw:['daniel','david','oliver','thomas','mark','reed','google uk english male']},
+        {id:'marcus',  emoji:'🎙️', name:'Marcus',  desc:'Broadcaster',  pitch:0.85,rate:1.0, vol:1.0,
+         kw:['alex','google uk','en-gb male','google english']},
+        {id:'james',   emoji:'👨',  name:'James',   desc:'Deep Warm',    pitch:0.75,rate:0.9, vol:1.0,
+         kw:['james','ralph','fred','arthur','microsoft david']},
+        {id:'leo',     emoji:'🧑‍🎓',name:'Leo',     desc:'Young Clear',  pitch:0.98,rate:1.05,vol:1.0,
+         kw:['lee','leon','ryan']},
     ]},
     {label:'👩 Natural Female',personas:[
-        {id:'sophia',  emoji:'👩‍💼',name:'Sophia',  desc:'Professional', pitch:1.08,rate:0.96,vol:1.0,kw:['samantha','karen','susan','victoria','zira']},
-        {id:'emma',    emoji:'🌸',  name:'Emma',    desc:'Warm Gentle',  pitch:1.18,rate:0.90,vol:1.0,kw:['emily','fiona','moira','tessa','alice']},
-        {id:'aria',    emoji:'🎤',  name:'Aria',    desc:'Crisp Clear',  pitch:1.12,rate:1.0, vol:1.0,kw:['aria','google us']},
-        {id:'nova',    emoji:'⭐',  name:'Nova',    desc:'Bright Fast',  pitch:1.22,rate:1.12,vol:1.0,kw:['nova','amelie','petra']},
+        {id:'sophia',  emoji:'👩‍💼',name:'Sophia',  desc:'Professional', pitch:1.1, rate:0.95,vol:1.0,
+         kw:['samantha','karen','susan','victoria','zira','microsoft zira','google us english female']},
+        {id:'emma',    emoji:'🌸',  name:'Emma',    desc:'Warm Gentle',  pitch:1.2, rate:0.88,vol:1.0,
+         kw:['emily','fiona','moira','tessa','alice','microsoft hazel']},
+        {id:'aria',    emoji:'🎤',  name:'Aria',    desc:'Crisp Clear',  pitch:1.12,rate:1.0, vol:1.0,
+         kw:['aria','google us english','ava','microsoft aria']},
+        {id:'nova',    emoji:'⭐',  name:'Nova',    desc:'Bright Fast',  pitch:1.25,rate:1.1, vol:1.0,
+         kw:['nova','amelie','petra','nicky']},
     ]},
     {label:'🎭 Character',personas:[
-        {id:'elder',   emoji:'🧓',  name:'Elder',   desc:'Wise & Slow',  pitch:0.72,rate:0.72,vol:1.0,kw:['fred','ralph']},
-        {id:'kid',     emoji:'🧒',  name:'Kid',     desc:'Playful',      pitch:1.65,rate:1.08,vol:1.0,kw:[]},
-        {id:'narrator',emoji:'📖', name:'Narrator',desc:'Story Voice',  pitch:0.90,rate:0.85,vol:1.0,kw:['daniel','thomas']},
-        {id:'robot',   emoji:'🤖', name:'Robot',   desc:'Synthetic',    pitch:0.45,rate:1.15,vol:1.0,kw:[]},
+        {id:'elder',   emoji:'🧓',  name:'Elder',   desc:'Wise & Slow',  pitch:0.7, rate:0.7, vol:1.0,
+         kw:['fred','ralph','albert','bruce']},
+        {id:'kid',     emoji:'🧒',  name:'Kid',     desc:'Playful',      pitch:1.7, rate:1.05,vol:1.0,
+         kw:[]},
+        {id:'narrator',emoji:'📖',  name:'Narrator',desc:'Story Voice',  pitch:0.88,rate:0.82,vol:1.0,
+         kw:['daniel','thomas','george','microsoft mark']},
+        {id:'robot',   emoji:'🤖',  name:'Robot',   desc:'Synthetic',    pitch:0.4, rate:1.15,vol:1.0,
+         kw:[]},
     ]},
     {label:'🌍 Accent',personas:[
-        {id:'british', emoji:'🇬🇧', name:'British', desc:'UK Accent',    pitch:0.92,rate:0.94,vol:1.0,kw:['daniel','oliver','en-gb','kate','serena']},
-        {id:'aussie',  emoji:'🇦🇺', name:'Aussie',  desc:'AU Accent',    pitch:0.98,rate:1.05,vol:1.0,kw:['karen','lee','en-au']},
-        {id:'sage',    emoji:'🧑‍🏫',name:'Sage',    desc:'Neutral US',   pitch:1.00,rate:1.00,vol:1.0,kw:['google us','samantha','ava']},
-        {id:'whisper', emoji:'🤫', name:'Whisper', desc:'Soft Breathy',  pitch:1.10,rate:0.78,vol:0.85,kw:[]},
+        {id:'british', emoji:'🇬🇧', name:'British', desc:'UK Accent',    pitch:0.92,rate:0.93,vol:1.0,
+         kw:['daniel','oliver','en-gb','kate','serena','google uk english','microsoft hazel','microsoft george']},
+        {id:'aussie',  emoji:'🇦🇺', name:'Aussie',  desc:'AU Accent',    pitch:0.98,rate:1.02,vol:1.0,
+         kw:['karen','lee','en-au','google australian']},
+        {id:'sage',    emoji:'🧑‍🏫',name:'Sage',    desc:'Neutral US',   pitch:1.0, rate:1.0, vol:1.0,
+         kw:['google us english','samantha','ava','microsoft david','allison']},
+        {id:'whisper', emoji:'🤫',  name:'Whisper', desc:'Soft Breathy', pitch:1.1, rate:0.75,vol:0.82,
+         kw:[]},
     ]}
 ];
-const ALL_EN_PERSONAS=EN_PERSONA_GROUPS.flatMap(g=>g.personas);
+const ALL_PERSONAS=EN_PERSONA_GROUPS.flatMap(g=>g.personas);
 
-// ══════════════════════════════════════════════════════
-// LOAD PDF.JS
-// ══════════════════════════════════════════════════════
+// load pdfjs
 const sc=document.createElement('script');
 sc.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-sc.onload=()=>{
-    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    initApp();
-};
+sc.onload=()=>{pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';initApp();};
 document.head.appendChild(sc);
 
-// ══════════════════════════════════════════════════════
-// MAIN APP
-// ══════════════════════════════════════════════════════
 function initApp(){
     const isMobile=()=>window.innerWidth<=768;
     const $=id=>document.getElementById(id);
 
     let pdfDoc=null,currentPage=1,totalPages=0;
-    let allVoices=[],activated=false;
+    let allVoices=[],voicesReady=false,activated=false;
     let activePersonaId='oliver';
     let forcedVoiceName=null;
     let historyWords=[];
@@ -579,299 +524,196 @@ function initApp(){
     const getRate =()=>parseFloat((isMobile()?$('m-rate-slider'):$('rate-slider'))?.value||1);
     const getPitch=()=>parseFloat((isMobile()?$('m-pitch-slider'):$('pitch-slider'))?.value||1);
     const getVol  =()=>parseFloat((isMobile()?$('m-vol-slider'):$('vol-slider'))?.value||1);
-    const getLangSample=l=>LANG_SAMPLES[l]||LANG_SAMPLES.en;
 
-    // ══════════════════════════════════════════════════
-    // VOICE LOADER — robust for localhost AND GitHub Pages
-    // Combines: immediate check + event listener + polling fallback
-    // ══════════════════════════════════════════════════
+    // ══════════════════════════════════════════
+    // VOICE LOADER — robust for GitHub Pages
+    // Covers: sync (Firefox/Safari), async event
+    // (Chrome HTTPS), and slow-load fallback
+    // ══════════════════════════════════════════
     function loadVoices(){
         return new Promise(resolve=>{
-            // 1. Try immediately (works on Firefox & localhost Chrome)
             const immediate=window.speechSynthesis.getVoices();
             if(immediate.length){resolve(immediate);return;}
-
-            let resolved=false;
-            function done(voices){
-                if(resolved)return;
-                resolved=true;
-                resolve(voices||[]);
-            }
-
-            // 2. Event listener (works on Chrome HTTPS / GitHub Pages)
-            // Use addEventListener (not onvoiceschanged) so we don't overwrite other listeners
-            function onChanged(){
-                window.speechSynthesis.removeEventListener('voiceschanged',onChanged);
-                done(window.speechSynthesis.getVoices());
-            }
-            window.speechSynthesis.addEventListener('voiceschanged',onChanged);
-
-            // 3. Polling fallback for Safari / browsers that never fire the event
-            let tries=0;
+            let done=false;
+            const finish=v=>{if(done)return;done=true;resolve(v||[]);};
+            // Primary: event listener
+            window.speechSynthesis.addEventListener('voiceschanged',function h(){
+                window.speechSynthesis.removeEventListener('voiceschanged',h);
+                finish(window.speechSynthesis.getVoices());
+            });
+            // Fallback poll — covers browsers that never fire event
+            let t=0;
             const poll=setInterval(()=>{
                 const v=window.speechSynthesis.getVoices();
-                if(v.length||tries++>50){
-                    clearInterval(poll);
-                    window.speechSynthesis.removeEventListener('voiceschanged',onChanged);
-                    done(v);
-                }
+                if(v.length||t++>60){clearInterval(poll);finish(v);}
             },150);
         });
     }
 
-    // Re-listen for mid-session voice changes (e.g. user installs new lang pack)
+    // Initial load (page open — no user gesture needed for getVoices)
+    loadVoices().then(v=>{
+        allVoices=v;voicesReady=true;
+        buildPersonaGrids();updateTag();
+    });
+
+    // Re-fire if browser loads more voices later (e.g. online voices stream in)
     window.speechSynthesis.addEventListener('voiceschanged',()=>{
         const v=window.speechSynthesis.getVoices();
-        if(v.length){allVoices=v;buildPersonaGrids();updateTag();}
+        if(v.length){allVoices=v;voicesReady=true;buildPersonaGrids();updateTag();}
     });
 
-    // Initial load
-    loadVoices().then(voices=>{
-        allVoices=voices;
-        buildPersonaGrids();
-        updateTag();
-    });
-
-    // ══════════════════════════════════════════════════
-    // VOICE POOL HELPERS
-    // ══════════════════════════════════════════════════
+    // ══ VOICE POOL ══
     function getVoicePool(lang){
         const bcp=(LANG_BCP[lang]||lang).toLowerCase();
+        const prefix=lang.toLowerCase();
         let pool=allVoices.filter(v=>v.lang.toLowerCase()===bcp);
-        if(!pool.length)pool=allVoices.filter(v=>v.lang.toLowerCase().startsWith(lang.toLowerCase()));
-        // Only fall back to English if truly nothing found for this lang
-        if(!pool.length&&lang!=='en')pool=allVoices.filter(v=>v.lang.toLowerCase().startsWith('en'));
+        if(!pool.length)pool=allVoices.filter(v=>v.lang.toLowerCase().startsWith(prefix));
+        // broader match: e.g. de-DE, de-AT both work for 'de'
+        if(!pool.length)pool=allVoices.filter(v=>v.lang.toLowerCase().startsWith(prefix.split('-')[0]));
         return pool;
     }
 
+    // ══ BEST VOICE — keyword matching works on both localhost & GitHub Pages ══
+    // Matches against full lowercase voice name so "Google UK English Male"
+    // and "Daniel" both match keyword 'daniel' / 'google uk'
     function getBestVoice(lang){
         const pool=getVoicePool(lang);
         if(!pool.length)return null;
+        if(forcedVoiceName){const fv=allVoices.find(v=>v.name===forcedVoiceName);if(fv)return fv;}
         if(lang==='en'){
-            const p=ALL_EN_PERSONAS.find(x=>x.id===activePersonaId);
+            const p=ALL_PERSONAS.find(x=>x.id===activePersonaId);
             const kw=p?.kw||[];
             if(kw.length){
-                const m=pool.find(v=>kw.some(k=>v.name.toLowerCase().includes(k)));
-                if(m)return m;
+                const match=pool.find(v=>{
+                    const n=v.name.toLowerCase();
+                    return kw.some(k=>n.includes(k.toLowerCase()));
+                });
+                if(match)return match;
             }
-            return pool[0];
+            // fallback: prefer local/non-network voice for reliability
+            return pool.find(v=>v.localService)||pool[0];
         }
-        // Non-English: prefer local/natural voice
         return pool.find(v=>v.localService)||pool[0];
     }
 
-    // ══════════════════════════════════════════════════
-    // PERSONA GRID — adaptive based on available voices
-    // ══════════════════════════════════════════════════
+    // ══ PERSONA GRID ══
     function buildPersonaGrids(){
         ['d-persona-container','m-persona-container'].forEach(cid=>{
             const c=$(cid);if(!c)return;
+            if(!voicesReady){c.innerHTML='<div class="voices-loading"><div class="spin">⏳</div><br>Loading voices…<br><small style="opacity:.6">Click Activate to speed this up</small></div>';return;}
             c.innerHTML='';
-            const lang=getLang();
-            const pool=getVoicePool(lang);
-
-            if(!allVoices.length){
-                // Still loading
-                c.innerHTML='<div class="voices-loading"><div class="spin">⚙️</div><br>Loading voices…</div>';
-                return;
-            }
-
+            const lang=getLang(),pool=getVoicePool(lang);
             if(lang==='en'&&pool.length>0){
-                // ── Full English persona grid ──
                 EN_PERSONA_GROUPS.forEach(group=>{
-                    const lbl=document.createElement('div');
-                    lbl.className='persona-section';
-                    lbl.textContent=group.label;
-                    c.appendChild(lbl);
-                    const grid=document.createElement('div');
-                    grid.className='persona-grid';
+                    const lbl=document.createElement('div');lbl.className='persona-section';lbl.textContent=group.label;c.appendChild(lbl);
+                    const grid=document.createElement('div');grid.className='persona-grid';
                     group.personas.forEach(p=>{
+                        const isActive=p.id===activePersonaId&&!forcedVoiceName;
                         const card=document.createElement('div');
-                        card.className='persona-card'+(p.id===activePersonaId?' active':'');
+                        card.className='persona-card'+(isActive?' active':'');
                         card.onclick=()=>window.__sp(p.id);
-                        card.innerHTML=`<span class="pe">${p.emoji}</span><span class="pn">${p.name}</span><span class="pd">${p.desc}</span><span class="pb">${p.id===activePersonaId?'✓':''}</span>`;
+                        // Show matched voice name underneath so user can verify
+                        const matchedVoice=pool.find(v=>p.kw.some(k=>v.name.toLowerCase().includes(k.toLowerCase())));
+                        const voiceHint=matchedVoice?`<span class="pd" style="color:var(--accent);font-size:.52em;">↳ ${matchedVoice.name.slice(0,14)}</span>`:`<span class="pd" style="color:#ff8a8088;font-size:.52em;">↳ default</span>`;
+                        card.innerHTML=`<span class="pe">${p.emoji}</span><span class="pn">${p.name}</span><span class="pd">${p.desc}</span>${voiceHint}<span class="pb">${isActive?'✓':''}</span>`;
                         grid.appendChild(card);
                     });
                     c.appendChild(grid);
                 });
-
             } else if(pool.length>1){
-                // ── Multiple voices for non-English ──
-                const lbl=document.createElement('div');
-                lbl.className='persona-section';
-                lbl.textContent=`🌐 ${lang.toUpperCase()} Voices (${pool.length})`;
-                c.appendChild(lbl);
-                const grid=document.createElement('div');
-                grid.className='persona-grid';
+                const lbl=document.createElement('div');lbl.className='persona-section';
+                lbl.textContent=`🌐 ${lang.toUpperCase()} Voices (${pool.length})`;c.appendChild(lbl);
+                const grid=document.createElement('div');grid.className='persona-grid';
                 pool.slice(0,12).forEach((v,i)=>{
-                    const currentBest=forcedVoiceName?v.name===forcedVoiceName:v===getBestVoice(lang);
-                    const card=document.createElement('div');
-                    card.className='persona-card'+(currentBest?' active':'');
-                    const femaleKw=['female','woman','girl','fiona','samantha','karen','emily','moira','tessa','alice','aria','zira','amelie','petra','anna','helga','nora','sofia','klara','ioana','yelena','milena','alva','victoria','paulina','sara','kanya','damayanti','raveena','heera','lekha','veena'];
-                    const genderEmoji=femaleKw.some(k=>v.name.toLowerCase().includes(k))?'👩':'👨';
-                    const shortName=v.name.replace(/Google |Microsoft /g,'').slice(0,12);
+                    const isActive=forcedVoiceName?v.name===forcedVoiceName:i===0;
+                    const card=document.createElement('div');card.className='persona-card'+(isActive?' active':'');
+                    const fem=/female|woman|girl|fiona|samantha|karen|emily|moira|tessa|alice|aria|zira|amelie|petra|anna|helga|nora|sofia|klara|ioana|yelena|milena|alva|victoria|paulina|sara|kanya|damayanti|raveena|heera|lekha|veena/i.test(v.name);
                     card.onclick=()=>window.__sv(v.name);
-                    card.innerHTML=`<span class="pe">${genderEmoji}</span><span class="pn" style="font-size:.62em;">${shortName}</span><span class="pd">${v.lang}</span><span class="pb">${currentBest?'✓':(i+1)}</span>`;
+                    card.innerHTML=`<span class="pe">${fem?'👩':'👨'}</span><span class="pn" style="font-size:.6em;">${v.name.replace(/Google |Microsoft /g,'').slice(0,13)}</span><span class="pd">${v.lang}</span><span class="pb">${isActive?'✓':(i+1)}</span>`;
                     grid.appendChild(card);
                 });
                 c.appendChild(grid);
-
             } else if(pool.length===1){
-                // ── Exactly one voice ──
                 const v=pool[0];
-                const box=document.createElement('div');
-                box.className='single-voice-card';
-                box.innerHTML=`<div class="sv-icon">🔊</div><div class="sv-name">${v.name}</div><div class="sv-desc">Only one <strong>${lang.toUpperCase()}</strong> voice available on this browser/device.<br>Tune Speed, Pitch & Volume below.</div><div class="sv-badge">✅ Auto-selected</div>`;
+                const box=document.createElement('div');box.className='single-voice-card';
+                box.innerHTML=`<div class="sv-icon">🔊</div><div class="sv-name">${v.name}</div><div class="sv-desc">Only 1 voice for <strong>${lang.toUpperCase()}</strong> on your browser.<br>Tune Speed & Pitch below.</div><div class="sv-badge">✅ Auto-selected</div>`;
                 c.appendChild(box);
-
             } else {
-                // ── No voices found ──
-                const box=document.createElement('div');
-                box.className='no-voice-card';
-                box.innerHTML=`⚠️ No <strong>${lang.toUpperCase()}</strong> voice found.<br>Try a different browser, or install <strong>${lang.toUpperCase()}</strong> language packs in your OS/device settings.`;
+                const box=document.createElement('div');box.className='no-voice-card';
+                box.innerHTML=`⚠️ No <strong>${lang.toUpperCase()}</strong> voice found.<br>Try Chrome with internet, or install language packs in OS settings.`;
                 c.appendChild(box);
             }
         });
     }
 
-    // Select specific non-EN voice by name
-    window.__sv=name=>{
-        forcedVoiceName=name;
-        buildPersonaGrids();
-        const v=allVoices.find(x=>x.name===name);
-        if(v)speakTextWith(getLangSample(getLang()),v);
-    };
-
-    // Select EN persona
+    window.__sv=name=>{forcedVoiceName=name;buildPersonaGrids();speakText(LANG_SAMPLES[getLang()]||LANG_SAMPLES.en);};
     window.__sp=pid=>{
-        activePersonaId=pid;
-        forcedVoiceName=null;
-        buildPersonaGrids();
-        const p=ALL_EN_PERSONAS.find(x=>x.id===pid);
+        activePersonaId=pid;forcedVoiceName=null;
+        const p=ALL_PERSONAS.find(x=>x.id===pid);
         if(p){
-            [['rate-slider','rate-val'],['m-rate-slider','m-rate-val']].forEach(([s,v])=>{
-                const sl=$(s),vl=$(v);if(sl)sl.value=p.rate;if(vl)vl.textContent=p.rate.toFixed(2);
-            });
-            [['pitch-slider','pitch-val'],['m-pitch-slider','m-pitch-val']].forEach(([s,v])=>{
-                const sl=$(s),vl=$(v);if(sl)sl.value=p.pitch;if(vl)vl.textContent=p.pitch.toFixed(2);
-            });
-            [['vol-slider','vol-val'],['m-vol-slider','m-vol-val']].forEach(([s,v])=>{
-                const sl=$(s),vl=$(v);if(sl)sl.value=p.vol||1;if(vl)vl.textContent=(p.vol||1).toFixed(2);
-            });
+            // Set sliders to persona's absolute values
+            [['rate-slider','rate-val'],['m-rate-slider','m-rate-val']].forEach(([s,v])=>{const sl=$(s),vl=$(v);if(sl){sl.value=p.rate;if(vl)vl.textContent=p.rate.toFixed(2);}});
+            [['pitch-slider','pitch-val'],['m-pitch-slider','m-pitch-val']].forEach(([s,v])=>{const sl=$(s),vl=$(v);if(sl){sl.value=p.pitch;if(vl)vl.textContent=p.pitch.toFixed(2);}});
+            [['vol-slider','vol-val'],['m-vol-slider','m-vol-val']].forEach(([s,v])=>{const sl=$(s),vl=$(v);if(sl){sl.value=p.vol||1;if(vl)vl.textContent=(p.vol||1).toFixed(2);}});
         }
-        speakText(getLangSample(getLang()));
+        buildPersonaGrids();
+        speakText(LANG_SAMPLES[getLang()]||LANG_SAMPLES.en);
         updateTag();
     };
 
-    // ══════════════════════════════════════════════════
-    // ENGINE TAG
-    // ══════════════════════════════════════════════════
     function updateTag(){
         const lang=getLang(),pool=getVoicePool(lang);
-        const act=activated?'✅ Active':'🟡 Tap Activate';
-        const txt=allVoices.length
-            ?(pool.length?`🟢 ${pool.length} voice${pool.length>1?'s':''} for ${lang.toUpperCase()} • ${act}`:`⚠️ No ${lang.toUpperCase()} voice • ${act}`)
-            :'⏳ Loading voices…';
+        const bv=getBestVoice(lang);
+        const act=activated?'✅ Active':'🟡 Not activated';
+        const voiceName=bv?bv.name.slice(0,20):'none';
+        const txt=voicesReady
+            ?(pool.length?`🟢 ${voiceName} • ${act}`:`⚠️ No ${lang.toUpperCase()} voice`)
+            :`⏳ Loading voices… • ${act}`;
         ['d-engine-tag','m-engine-tag'].forEach(id=>{
-            const el=$(id);if(!el)return;
-            el.textContent=txt;
-            el.className=`engine-tag ${pool.length&&activated?'ok':'warn'}`;
+            const el=$(id);if(el){el.textContent=txt;el.className=`engine-tag ${pool.length&&activated?'ok':'warn'}`;}
         });
     }
 
-    // ══════════════════════════════════════════════════
+    // ══════════════════════════════════
     // SPEAK ENGINE
-    // cancel → 80ms delay → speak (prevents Chrome silent fail on multi-word)
-    // ══════════════════════════════════════════════════
-    function speakTextWith(text,voice){
+    // Uses ABSOLUTE pitch/rate from slider
+    // NOT multiplied — fixes persona sound
+    // on GitHub Pages vs localhost mismatch
+    // ══════════════════════════════════
+    function speakCore(text,voice){
         if(!text?.trim())return;
         window.speechSynthesis.cancel();
         setTimeout(()=>{
             const lang=getLang();
             const u=new SpeechSynthesisUtterance(text);
             if(voice)u.voice=voice;
-            u.lang=voice?voice.lang:(LANG_BCP[lang]||'en-US');
-            u.rate=getRate();
-            u.pitch=getPitch();
-            u.volume=getVol();
-            // Keep-alive for long texts (Chrome bug: stops after ~15s)
+            // Use slider values directly — these are already set to persona values
+            u.rate  = Math.min(2,Math.max(0.1,getRate()));
+            u.pitch = Math.min(2,Math.max(0.1,getPitch()));
+            u.volume= Math.min(1,Math.max(0,getVol()));
+            u.lang  = voice?voice.lang:(LANG_BCP[lang]||'en-US');
+            // keep-alive for Chrome (stops after ~15s on some builds)
             let kr;
-            u.onstart=()=>{
-                kr=setInterval(()=>{
-                    if(!window.speechSynthesis.speaking)clearInterval(kr);
-                    else{window.speechSynthesis.pause();window.speechSynthesis.resume();}
-                },8000);
-            };
+            u.onstart=()=>{kr=setInterval(()=>{if(!window.speechSynthesis.speaking)clearInterval(kr);else{window.speechSynthesis.pause();window.speechSynthesis.resume();}},8000);};
             u.onend=u.onerror=()=>clearInterval(kr);
             window.speechSynthesis.speak(u);
-            showFeedback(text);
-            addHistory(text);
+            showFeedback(text);addHistory(text);
         },80);
     }
 
     function speakText(text){
-        let voice=null;
-        if(forcedVoiceName)voice=allVoices.find(v=>v.name===forcedVoiceName)||null;
-        if(!voice)voice=getBestVoice(getLang());
-        speakTextWith(text,voice);
+        speakCore(text,getBestVoice(getLang()));
     }
 
-    // ══════════════════════════════════════════════════
-    // SPEAK ALL WITH WORD-BY-WORD HIGHLIGHT
-    // Uses onboundary events to light up chips as text plays
-    // ══════════════════════════════════════════════════
-    function speakAllWithHighlight(text,container,chipClass){
-        if(!text?.trim())return;
-        window.speechSynthesis.cancel();
-        setTimeout(()=>{
-            const lang=getLang();
-            let voice=forcedVoiceName?allVoices.find(v=>v.name===forcedVoiceName):getBestVoice(lang);
-            const u=new SpeechSynthesisUtterance(text);
-            if(voice)u.voice=voice;
-            u.lang=voice?voice.lang:(LANG_BCP[lang]||'en-US');
-            u.rate=getRate();u.pitch=getPitch();u.volume=getVol();
-
-            const chips=container?[...container.querySelectorAll('.'+chipClass)]:[];
-            const words=text.match(/\S+/g)||[];
-
-            u.onboundary=e=>{
-                if(e.name!=='word'||!chips.length)return;
-                chips.forEach(c=>c.classList.remove('speaking'));
-                // Find which word index the char offset lands in
-                let offset=0;
-                for(let i=0;i<words.length;i++){
-                    const pos=text.indexOf(words[i],offset);
-                    if(e.charIndex>=pos&&e.charIndex<pos+words[i].length){
-                        if(chips[i])chips[i].classList.add('speaking');
-                        break;
-                    }
-                    offset=pos+words[i].length;
-                }
-            };
-            u.onend=u.onerror=()=>chips.forEach(c=>c.classList.remove('speaking'));
-            let kr;
-            u.onstart=()=>{kr=setInterval(()=>{if(!window.speechSynthesis.speaking)clearInterval(kr);else{window.speechSynthesis.pause();window.speechSynthesis.resume();}},8000);};
-            window.speechSynthesis.speak(u);
-            showFeedback(text);
-            addHistory(text);
-        },80);
-    }
-
-    // ══════════════════════════════════════════════════
-    // FEEDBACK (toast / bubble)
-    // ══════════════════════════════════════════════════
     function showFeedback(text){
-        const short=text.length>40?text.slice(0,40)+'…':text;
+        const short=text.length>44?text.slice(0,44)+'…':text;
         if(isMobile()){
             mToast.textContent=`🔊 ${short}`;
             mToast.style.display='block';mToast.classList.add('show');
             clearTimeout(mToast._t);
-            mToast._t=setTimeout(()=>{
-                mToast.classList.remove('show');
-                setTimeout(()=>mToast.style.display='none',350);
-            },Math.max(2000,text.length*55));
+            mToast._t=setTimeout(()=>{mToast.classList.remove('show');setTimeout(()=>mToast.style.display='none',350);},Math.max(2000,text.length*55));
         } else {
-            $('bubble-label').textContent='🔊 Speaking';
+            $('bubble-label').textContent=`🔊 Speaking`;
             $('bubble-word').textContent=short;
             dBubble.classList.add('show');
             clearTimeout(dBubble._t);
@@ -879,220 +721,163 @@ function initApp(){
         }
     }
 
-    // ══════════════════════════════════════════════════
-    // WORD CHIPS BUILDER
-    // ══════════════════════════════════════════════════
-    function buildWordChips(text,container,chipClass){
+    // ══ WORD CHIPS ══
+    function buildWordChips(text,container,cls){
         container.innerHTML='';
-        const words=text.match(/\S+/g)||[];
-        words.forEach(w=>{
-            const chip=document.createElement('span');
-            chip.className=chipClass;
-            chip.textContent=w;
+        (text.match(/\S+/g)||[]).forEach(w=>{
+            const chip=document.createElement('span');chip.className=cls;chip.textContent=w;
             chip.addEventListener('click',e=>{
                 e.stopPropagation();
-                container.querySelectorAll('.'+chipClass).forEach(c=>c.classList.remove('speaking'));
+                container.querySelectorAll('.'+cls).forEach(c=>c.classList.remove('speaking'));
                 chip.classList.add('speaking');
                 speakText(w.replace(/[^\p{L}'\-]/gu,''));
-                setTimeout(()=>chip.classList.remove('speaking'),2000);
+                setTimeout(()=>chip.classList.remove('speaking'),2200);
             });
             container.appendChild(chip);
         });
     }
 
-    // ══════════════════════════════════════════════════
-    // MOBILE CAPTION
-    // ══════════════════════════════════════════════════
-    function showMobileCaption(text){
-        if(!text||text.length<2)return;
-        savedSelText=text;
-        buildWordChips(text,mSelWords,'sel-word-chip');
-        mSelCaption.classList.add('show');
+    function speakAllWithHL(text,container,cls){
+        if(!text?.trim())return;
+        window.speechSynthesis.cancel();
+        setTimeout(()=>{
+            const lang=getLang();
+            const voice=getBestVoice(lang);
+            const u=new SpeechSynthesisUtterance(text);
+            if(voice)u.voice=voice;
+            u.rate=Math.min(2,Math.max(0.1,getRate()));
+            u.pitch=Math.min(2,Math.max(0.1,getPitch()));
+            u.volume=Math.min(1,Math.max(0,getVol()));
+            u.lang=voice?voice.lang:(LANG_BCP[lang]||'en-US');
+            const chips=container?[...container.querySelectorAll('.'+cls)]:[];
+            u.onboundary=e=>{
+                if(e.name!=='word'||!chips.length)return;
+                chips.forEach(c=>c.classList.remove('speaking'));
+                const words=text.match(/\S+/g)||[];
+                let offset=0;
+                for(let i=0;i<words.length;i++){
+                    const pos=text.indexOf(words[i],offset);
+                    if(e.charIndex>=pos&&e.charIndex<pos+words[i].length){if(chips[i])chips[i].classList.add('speaking');break;}
+                    offset=pos+words[i].length;
+                }
+            };
+            u.onend=u.onerror=()=>{chips.forEach(c=>c.classList.remove('speaking'));};
+            let kr;u.onstart=()=>{kr=setInterval(()=>{if(!window.speechSynthesis.speaking)clearInterval(kr);else{window.speechSynthesis.pause();window.speechSynthesis.resume();}},8000);};
+            window.speechSynthesis.speak(u);
+            showFeedback(text);addHistory(text);
+        },80);
     }
+
+    // ══ MOBILE CAPTION ══
+    function showMobileCaption(text){if(!text||text.length<2)return;savedSelText=text;buildWordChips(text,mSelWords,'sel-word-chip');mSelCaption.classList.add('show');}
     function hideMobileCaption(){mSelCaption.classList.remove('show');savedSelText='';}
+    $('m-sel-speak-btn')?.addEventListener('click',()=>{const t=savedSelText;hideMobileCaption();window.getSelection()?.removeAllRanges();if(t)speakAllWithHL(t,null,'');});
+    $('m-sel-dismiss-btn')?.addEventListener('click',()=>{hideMobileCaption();window.getSelection()?.removeAllRanges();});
 
-    $('m-sel-speak-btn')?.addEventListener('click',()=>{
-        const t=savedSelText;
-        hideMobileCaption();
-        window.getSelection()?.removeAllRanges();
-        if(t)speakAllWithHighlight(t,null,null);
-    });
-    $('m-sel-dismiss-btn')?.addEventListener('click',()=>{
-        hideMobileCaption();
-        window.getSelection()?.removeAllRanges();
-    });
-
-    // ══════════════════════════════════════════════════
-    // DESKTOP SELECTION BAR
-    // ══════════════════════════════════════════════════
+    // ══ DESKTOP SELECTION BAR ══
     let dSelTimer=null;
-    function checkDesktopSelection(){
+    function checkDesktopSel(){
         clearTimeout(dSelTimer);
         dSelTimer=setTimeout(()=>{
             const t=window.getSelection()?.toString().trim()||'';
-            if(t.length>1){
-                savedSelText=t;
-                buildWordChips(t,dWordChips,'d-word-chip');
-                dSelBar.classList.add('visible');
-            } else if(!t){
-                dSelBar.classList.remove('visible');
-            }
+            if(t.length>1){savedSelText=t;buildWordChips(t,dWordChips,'d-word-chip');dSelBar.classList.add('visible');}
+            else if(!t)dSelBar.classList.remove('visible');
         },200);
     }
-    document.addEventListener('mouseup',e=>{if(!isMobile())checkDesktopSelection();});
-    $('btn-speak-sel')?.addEventListener('click',()=>{
-        const t=savedSelText,container=dWordChips;
-        dSelBar.classList.remove('visible');
-        window.getSelection()?.removeAllRanges();
-        if(t)speakAllWithHighlight(t,container,'d-word-chip');
-    });
-    $('btn-dismiss-sel')?.addEventListener('click',()=>{
-        dSelBar.classList.remove('visible');
-        savedSelText='';
-        window.getSelection()?.removeAllRanges();
-    });
+    document.addEventListener('mouseup',e=>{if(!isMobile())checkDesktopSel();});
+    $('btn-speak-sel')?.addEventListener('click',()=>{const t=savedSelText,con=dWordChips;dSelBar.classList.remove('visible');window.getSelection()?.removeAllRanges();if(t)speakAllWithHL(t,con,'d-word-chip');});
+    $('btn-dismiss-sel')?.addEventListener('click',()=>{dSelBar.classList.remove('visible');savedSelText='';window.getSelection()?.removeAllRanges();});
 
-    // ══════════════════════════════════════════════════
-    // LANGUAGE CHANGE
-    // ══════════════════════════════════════════════════
+    // ══ LANG CHANGE ══
     function updateLangPills(){
-        const lang=getLang(),sample=getLangSample(lang);
+        const lang=getLang(),sample=LANG_SAMPLES[lang]||LANG_SAMPLES.en;
         const short=sample.length>38?sample.slice(0,38)+'…':sample;
         [$('m-lang-pill'),$('d-lang-pill')].forEach(el=>{if(el)el.textContent=`💬 "${short}"`;});
         [$('m-test-phrase'),$('test-input')].forEach(el=>{if(el&&el!==document.activeElement)el.value=sample;});
     }
-    const onLangChange=()=>{
-        forcedVoiceName=null;
-        buildPersonaGrids();
-        updateLangPills();
-        updateTag();
-        if(activated)speakText(getLangSample(getLang()));
-    };
+    const onLangChange=()=>{forcedVoiceName=null;buildPersonaGrids();updateLangPills();updateTag();if(activated)speakText(LANG_SAMPLES[getLang()]||LANG_SAMPLES.en);};
     $('m-lang-select')?.addEventListener('change',onLangChange);
     $('lang-select')  ?.addEventListener('change',onLangChange);
     updateLangPills();
 
-    // ══════════════════════════════════════════════════
-    // CONTACT MODAL
-    // ══════════════════════════════════════════════════
+    // ══ CONTACT MODAL ══
     const modal=$('contact-modal');
     $('modal-close-btn')?.addEventListener('click',()=>modal.classList.remove('show'));
     modal?.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show');});
     $('d-mic-btn')?.addEventListener('click',()=>modal.classList.add('show'));
     $('m-mic-btn')?.addEventListener('click',()=>modal.classList.add('show'));
 
-    // ══════════════════════════════════════════════════
-    // SLIDERS
-    // ══════════════════════════════════════════════════
+    // ══ SLIDERS ══
     [['rate-slider','rate-val'],['pitch-slider','pitch-val'],['vol-slider','vol-val'],
      ['m-rate-slider','m-rate-val'],['m-pitch-slider','m-pitch-val'],['m-vol-slider','m-vol-val']
-    ].forEach(([s,v])=>{
-        const sl=$(s),vl=$(v);
-        if(sl&&vl)sl.oninput=()=>vl.textContent=parseFloat(sl.value).toFixed(2);
-    });
+    ].forEach(([s,v])=>{const sl=$(s),vl=$(v);if(sl&&vl)sl.oninput=()=>vl.textContent=parseFloat(sl.value).toFixed(2);});
 
-    // ══════════════════════════════════════════════════
-    // ACTIVATE — re-fetches voices after user gesture
-    // Critical for GitHub Pages / any HTTPS deployment
-    // ══════════════════════════════════════════════════
+    // ══ ACTIVATE ══
+    // After user gesture → Chrome HTTPS releases full voice list
     function doActivate(){
-        // Silent utterance to unlock audio context
         window.speechSynthesis.cancel();
         const w=new SpeechSynthesisUtterance(' ');w.volume=0;
         window.speechSynthesis.speak(w);
         activated=true;
-
-        // Re-fetch voices after user gesture (GitHub Pages fix)
-        loadVoices().then(voices=>{
-            allVoices=voices;
-            buildPersonaGrids();
-            updateTag();
-            setTimeout(()=>speakText(getLangSample(getLang())),150);
+        // Re-fetch voices after user gesture — critical for GitHub Pages Chrome
+        loadVoices().then(v=>{
+            if(v.length){allVoices=v;voicesReady=true;}
+            buildPersonaGrids();updateTag();
+            setTimeout(()=>speakText(LANG_SAMPLES[getLang()]||LANG_SAMPLES.en),200);
         });
-
         setStatus('status','✅ Activated! Upload your PDF.','#0d2b1a','#00e676');
         setStatus('m-status','✅ Voice ready! Go to Reader tab.','#0d2b1a','#00e676');
-
         const banner=$('m-activate-banner');
         if(banner){
             banner.style.background='linear-gradient(135deg,rgba(0,200,83,.12),rgba(0,230,118,.05))';
             banner.style.borderColor='rgba(0,200,83,.3)';
             banner.querySelector('p').textContent='✅ Voice active! Pick language, then go to Reader tab.';
-            const btn=banner.querySelector('button');
-            if(btn){btn.textContent='✅ Activated';btn.style.background='linear-gradient(135deg,#00c853,#00e676)';btn.style.color='#0a1a0a';}
+            const btn=banner.querySelector('button');if(btn){btn.textContent='✅ Activated';btn.style.background='linear-gradient(135deg,#00c853,#00e676)';btn.style.color='#0a1a0a';}
         }
     }
-    $('btn-activate')     ?.addEventListener('click',doActivate);
-    $('m-btn-activate')   ?.addEventListener('click',doActivate);
-    $('m-btn-activate2')  ?.addEventListener('click',doActivate);
-    $('m-btn-test-phrase')?.addEventListener('click',()=>{
-        if(!activated)doActivate();
-        else speakText($('m-test-phrase')?.value||getLangSample(getLang()));
-    });
+    $('btn-activate')    ?.addEventListener('click',doActivate);
+    $('m-btn-activate')  ?.addEventListener('click',doActivate);
+    $('m-btn-activate2') ?.addEventListener('click',doActivate);
+    $('m-btn-test-phrase')?.addEventListener('click',()=>{if(!activated)doActivate();else speakText($('m-test-phrase')?.value||LANG_SAMPLES[getLang()]);});
 
-    // ══════════════════════════════════════════════════
-    // BOTTOM NAV (mobile)
-    // ══════════════════════════════════════════════════
+    // ══ BOTTOM NAV ══
     document.querySelectorAll('.nav-tab').forEach(tab=>{
         tab.onclick=()=>{
-            document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-            tab.classList.add('active');
-            document.querySelectorAll('.mobile-page').forEach(p=>p.classList.remove('active'));
-            $(tab.dataset.tab)?.classList.add('active');
+            document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');
+            document.querySelectorAll('.mobile-page').forEach(p=>p.classList.remove('active'));$(tab.dataset.tab)?.classList.add('active');
         };
     });
 
-    // ══════════════════════════════════════════════════
-    // ZOOM (mobile)
-    // ══════════════════════════════════════════════════
+    // ══ ZOOM ══
     function applyZoom(z){
         mZoom=Math.max(0.4,Math.min(3.5,z));
         const inner=$('m-pdf-inner'),outer=$('m-pdf-outer');
         if(!inner||!outer)return;
-        inner.style.transform=`scale(${mZoom})`;
-        inner.style.width=(outer.clientWidth/mZoom)+'px';
+        inner.style.transform=`scale(${mZoom})`;inner.style.width=(outer.clientWidth/mZoom)+'px';
         const lbl=$('m-zoom-label');if(lbl)lbl.textContent=Math.round(mZoom*100)+'%';
     }
     $('m-zoom-in')   ?.addEventListener('click',()=>applyZoom(mZoom+0.25));
     $('m-zoom-out')  ?.addEventListener('click',()=>applyZoom(mZoom-0.25));
     $('m-zoom-reset')?.addEventListener('click',()=>applyZoom(1.0));
-
     const pdfOuter=$('m-pdf-outer');
     if(pdfOuter){
-        pdfOuter.addEventListener('touchstart',e=>{
-            if(e.touches.length===2){
-                isPinching=true;
-                pinchStartDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-                pinchStartZoom=mZoom;
-            }
-        },{passive:true});
-        pdfOuter.addEventListener('touchmove',e=>{
-            if(e.touches.length===2&&isPinching){
-                e.preventDefault();
-                applyZoom(pinchStartZoom*(Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)/pinchStartDist));
-            }
-        },{passive:false});
-        pdfOuter.addEventListener('touchend',e=>{
-            if(e.touches.length<2)isPinching=false;
-        },{passive:true});
+        pdfOuter.addEventListener('touchstart',e=>{if(e.touches.length===2){isPinching=true;pinchStartDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);pinchStartZoom=mZoom;}},{passive:true});
+        pdfOuter.addEventListener('touchmove',e=>{if(e.touches.length===2&&isPinching){e.preventDefault();applyZoom(pinchStartZoom*(Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)/pinchStartDist));}},{passive:false});
+        pdfOuter.addEventListener('touchend',e=>{if(e.touches.length<2)isPinching=false;},{passive:true});
     }
 
-    // ══════════════════════════════════════════════════
-    // FILE UPLOAD
-    // ══════════════════════════════════════════════════
-    const setupUpload=(aId,iId)=>{
+    // ══ UPLOAD ══
+    const setupUp=(aId,iId)=>{
         const a=$(aId),i=$(iId);if(!a||!i)return;
         a.addEventListener('click',e=>{if(e.target.tagName!=='LABEL')i.click();});
-        a.ondragover=e=>{e.preventDefault();a.classList.add('drag');};
-        a.ondragleave=()=>a.classList.remove('drag');
+        a.ondragover=e=>{e.preventDefault();a.classList.add('drag');};a.ondragleave=()=>a.classList.remove('drag');
         a.ondrop=e=>{e.preventDefault();a.classList.remove('drag');if(e.dataTransfer.files[0]?.type==='application/pdf')loadPDF(e.dataTransfer.files[0]);};
         i.onchange=e=>{if(e.target.files[0])loadPDF(e.target.files[0]);};
     };
-    setupUpload('upload-area','file-input');
-    setupUpload('m-upload-area','m-file-input');
+    setupUp('upload-area','file-input');setupUp('m-upload-area','m-file-input');
 
     async function loadPDF(file){
-        if(!activated)return alert('Please tap "Activate Voice Engine" first!');
+        if(!activated)return alert('Tap "Activate Voice Engine" first!');
         setStatus('status','⏳ Loading PDF...','#1a1500','#ffd740');
         setStatus('m-status','⏳ Loading...','#1a1500','#ffd740');
         const buf=await file.arrayBuffer();
@@ -1103,31 +888,24 @@ function initApp(){
             el.innerHTML=`<div style="padding:9px;text-align:center;"><span style="color:var(--success);font-weight:700;">✅ ${file.name}</span><br><span style="color:var(--muted);font-size:.76em;">${totalPages} pages</span><br><label style="color:var(--primary);font-size:.78em;cursor:pointer;margin-top:4px;display:inline-block;">🔄 Change<input type="file" accept=".pdf" style="display:none;" onchange="window.__cf(this)"></label></div>`;
         });
         window.__cf=inp=>{if(inp.files[0])loadPDF(inp.files[0]);};
-        $('toolbar').style.display='block';
-        $('m-toolbar').classList.add('visible');
+        $('toolbar').style.display='block';$('m-toolbar').classList.add('visible');
         const hint=$('m-sel-hint');if(hint)hint.style.display='block';
         setStatus('status',`📄 ${totalPages} pages — Click word | drag-select sentence`,'#0d2b1a','#00e676');
-        setStatus('m-status',`📄 ${totalPages} pages — Tap word | long-press drag`,'#0d2b1a','#00e676');
-        await renderPage(currentPage);
-        updateNav();
+        setStatus('m-status',`📄 ${totalPages} pages — Tap word | long-press = sentence`,'#0d2b1a','#00e676');
+        await renderPage(currentPage);updateNav();
     }
 
-    // ══════════════════════════════════════════════════
-    // PAGE NAVIGATION
-    // ══════════════════════════════════════════════════
     const goPage=n=>{if(!pdfDoc||n<1||n>totalPages)return;currentPage=n;renderPage(n);updateNav();};
     $('btn-prev')  ?.addEventListener('click',()=>goPage(currentPage-1));
     $('btn-next')  ?.addEventListener('click',()=>goPage(currentPage+1));
     $('m-btn-prev')?.addEventListener('click',()=>goPage(currentPage-1));
     $('m-btn-next')?.addEventListener('click',()=>goPage(currentPage+1));
-
     function updateNav(){
         ['page-info','m-page-info'].forEach(id=>{const el=$(id);if(el)el.textContent=`${currentPage}/${totalPages}`;});
         ['btn-prev','m-btn-prev'].forEach(id=>{const el=$(id);if(el)el.disabled=currentPage===1;});
         ['btn-next','m-btn-next'].forEach(id=>{const el=$(id);if(el)el.disabled=currentPage===totalPages;});
     }
 
-    // Swipe to change page (mobile)
     let swX=0,swY=0;
     if(pdfOuter){
         pdfOuter.addEventListener('touchstart',e=>{if(e.touches.length===1){swX=e.touches[0].clientX;swY=e.touches[0].clientY;}},{passive:true});
@@ -1140,37 +918,22 @@ function initApp(){
         },{passive:true});
     }
 
-    // ══════════════════════════════════════════════════
-    // RENDER PDF PAGE
-    // ══════════════════════════════════════════════════
     async function renderPage(num){
-        const targets=[
-            {cid:'pdf-container',isMob:false},
-            {cid:'m-pdf-inner',  isMob:true}
-        ];
+        const targets=[{cid:'pdf-container',isMob:false},{cid:'m-pdf-inner',isMob:true}];
         for(const {cid,isMob} of targets){
-            const c=$(cid);if(!c)continue;
-            c.innerHTML='';
+            const c=$(cid);if(!c)continue;c.innerHTML='';
             const page=await pdfDoc.getPage(num);
             const outerW=isMob?($('m-pdf-outer')?.clientWidth||360):($('pdf-container')?.clientWidth||800);
-            const baseW=isMob?(outerW-14):(outerW-20);
+            const baseW=isMob?outerW-14:outerW-20;
             const unscaled=page.getViewport({scale:1});
             const scale=Math.max(1.0,Math.min(2.5,baseW/unscaled.width));
             const vp=page.getViewport({scale});
-
             if(isMob){c.style.width=vp.width+'px';c.style.minWidth=vp.width+'px';}
-
-            const wrap=document.createElement('div');
-            wrap.className='page-wrapper';
-            wrap.style.width=vp.width+'px';wrap.style.height=vp.height+'px';
-
-            const canvas=document.createElement('canvas');
-            canvas.width=vp.width;canvas.height=vp.height;
+            const wrap=document.createElement('div');wrap.className='page-wrapper';wrap.style.width=vp.width+'px';wrap.style.height=vp.height+'px';
+            const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;
             await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
-
             const tl=document.createElement('div');tl.className='textLayer';
             wrap.appendChild(canvas);wrap.appendChild(tl);c.appendChild(wrap);
-
             const tc=await page.getTextContent();
             tc.items.forEach(item=>{
                 if(!item.str.trim())return;
@@ -1181,37 +944,20 @@ function initApp(){
                 span.style.top=(tx[5]-item.height*scale)+'px';
                 span.style.fontSize=Math.abs(tx[0])+'px';
                 span.style.fontFamily=item.fontName||'sans-serif';
-
-                // Desktop: click = word, drag = sentence bar
                 span.addEventListener('click',e=>{
                     e.stopPropagation();
                     const sel=window.getSelection()?.toString().trim()||'';
-                    if(sel.length>1){
-                        savedSelText=sel;
-                        buildWordChips(sel,dWordChips,'d-word-chip');
-                        dSelBar.classList.add('visible');
-                        return;
-                    }
-                    const w=getWordAt(e,span);
-                    if(w){hlSpan(span);speakText(w);}
+                    if(sel.length>1){savedSelText=sel;buildWordChips(sel,dWordChips,'d-word-chip');dSelBar.classList.add('visible');return;}
+                    const w=getWordAt(e,span);if(w){hlSpan(span);speakText(w);}
                 });
-
-                // Mobile: tap = word, long-press drag = sentence caption
-                let tStart=0,tMoved=false,lpTimer=null;
-                span.addEventListener('touchstart',()=>{
-                    tStart=Date.now();tMoved=false;
-                    span.classList.add('hl');
-                    lpTimer=setTimeout(()=>span.classList.remove('hl'),400);
-                },{passive:true});
-                span.addEventListener('touchmove',()=>{
-                    tMoved=true;clearTimeout(lpTimer);span.classList.remove('hl');
-                },{passive:true});
+                let tS=0,tMoved=false,lpT=null;
+                span.addEventListener('touchstart',()=>{tS=Date.now();tMoved=false;span.classList.add('hl');lpT=setTimeout(()=>span.classList.remove('hl'),400);},{passive:true});
+                span.addEventListener('touchmove',()=>{tMoved=true;clearTimeout(lpT);span.classList.remove('hl');},{passive:true});
                 span.addEventListener('touchend',e=>{
-                    clearTimeout(lpTimer);span.classList.remove('hl');
-                    if(isPinching)return;
+                    clearTimeout(lpT);span.classList.remove('hl');if(isPinching)return;
                     const sel=window.getSelection()?.toString().trim()||'';
                     if(sel.length>1){e.preventDefault();showMobileCaption(sel);return;}
-                    if(!tMoved&&Date.now()-tStart<500){
+                    if(!tMoved&&Date.now()-tS<500){
                         e.preventDefault();
                         const t=e.changedTouches[0];
                         const w=getWordAt({clientX:t.clientX,clientY:t.clientY},span);
@@ -1220,26 +966,12 @@ function initApp(){
                 });
                 tl.appendChild(span);
             });
-
-            // Also catch drag-selection across multiple spans
-            if(isMob){
-                tl.addEventListener('touchend',()=>{
-                    setTimeout(()=>{
-                        const sel=window.getSelection()?.toString().trim()||'';
-                        if(sel.length>1)showMobileCaption(sel);
-                    },120);
-                },{passive:true});
-            } else {
-                tl.addEventListener('mouseup',()=>checkDesktopSelection());
-            }
+            if(isMob){tl.addEventListener('touchend',()=>{setTimeout(()=>{const sel=window.getSelection()?.toString().trim()||'';if(sel.length>1)showMobileCaption(sel);},120);},{passive:true});}
+            else tl.addEventListener('mouseup',()=>checkDesktopSel());
         }
-        hideMobileCaption();
-        applyZoom(mZoom);
+        hideMobileCaption();applyZoom(mZoom);
     }
 
-    // ══════════════════════════════════════════════════
-    // WORD EXTRACTION from click position
-    // ══════════════════════════════════════════════════
     function getWordAt(e,span){
         if(document.caretRangeFromPoint){
             const r=document.caretRangeFromPoint(e.clientX,e.clientY);
@@ -1255,17 +987,9 @@ function initApp(){
         return span.textContent.trim().split(/\s+/)[0].replace(/[^\p{L}'\-]/gu,'')||span.textContent.trim();
     }
 
-    // Span click highlight animation
     let lastSpan=null;
-    function hlSpan(s){
-        if(lastSpan)lastSpan.classList.remove('clicked');
-        s.classList.add('clicked');lastSpan=s;
-        setTimeout(()=>s.classList.remove('clicked'),1200);
-    }
+    function hlSpan(s){if(lastSpan)lastSpan.classList.remove('clicked');s.classList.add('clicked');lastSpan=s;setTimeout(()=>s.classList.remove('clicked'),1200);}
 
-    // ══════════════════════════════════════════════════
-    // HISTORY
-    // ══════════════════════════════════════════════════
     function addHistory(text){
         const label=text.length>22?text.slice(0,22)+'…':text;
         if(historyWords[0]?.text===text)return;
@@ -1275,9 +999,6 @@ function initApp(){
     }
     window.__sh=t=>speakText(t);
 
-    // ══════════════════════════════════════════════════
-    // STATUS BAR HELPER
-    // ══════════════════════════════════════════════════
     function setStatus(id,msg,bg,color){
         const el=$(id);if(!el)return;
         el.style.cssText=`display:block;background:${bg};color:${color};padding:7px 12px;border-radius:10px;font-weight:600;font-size:.82em;text-align:center;margin-bottom:8px;`;
@@ -1287,3 +1008,4 @@ function initApp(){
 </script>
 </body>
 </html>
+
