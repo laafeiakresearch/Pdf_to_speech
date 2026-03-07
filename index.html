@@ -634,58 +634,65 @@ function initApp(){
 
     // ── UPDATED buildGrids: hides groups when lang has no voices ──
     function buildGrids(){
-        const lang=getLang();
-        const groups=getGroups(lang);
-        const hasVoice=langHasVoice(lang);
+    const lang   = getLang();
+    const groups = getGroups(lang);
 
-        ['d-persona-container','m-persona-container'].forEach(cid=>{
-            const c=$(cid);if(!c)return;
-            c.innerHTML='';
-            const seen=new Set();
+    ['d-persona-container','m-persona-container'].forEach(cid=>{
+        const c=$(cid);
+        if(!c)return;
+        c.innerHTML='';
 
-            groups.forEach(group=>{
-                // For language-specific extra groups (non-BASE), hide if lang has no voices
-                const isLangExtra=!BASE_GROUPS.includes(group);
-                if(isLangExtra&&!hasVoice) return;
+        const seenId    = new Set(); // skip duplicate persona ids
+        const seenVoice = new Set(); // skip personas resolving to same voice
 
-                const lbl=document.createElement('div');
-                lbl.className='persona-section';
-                lbl.textContent=group.label;
+        groups.forEach(group=>{
+            if(!langHasVoice(lang))return;
 
-                const grid=document.createElement('div');
-                grid.className='persona-grid';
-                let count=0;
+            const lbl=document.createElement('div');
+            lbl.className='persona-section';
+            lbl.textContent=group.label;
 
-                group.personas.forEach(p=>{
-                    if(seen.has(p.id))return;
-                    seen.add(p.id);
+            const grid=document.createElement('div');
+            grid.className='persona-grid';
 
-                    // For BASE groups: show always (they work for any lang via fallback)
-                    // But hide persona card if voices loaded AND lang has no voices at all
-                    // (only apply strict hiding for lang-extra personas)
-                    if(isLangExtra&&!hasVoice)return;
+            let groupHasCard=false;
 
-                    const isAct=p.id===activePersona.id;
-                    const card=document.createElement('div');
-                    card.className='persona-card'+(isAct?' active':'');
-                    card.onclick=()=>window.__sp(p.id);
-                    card.innerHTML=
-                        `<span class="pe">${p.emoji}</span>`+
-                        `<span class="pn">${p.name}</span>`+
-                        `<span class="pd">${p.desc}</span>`+
-                        `<span class="pb">${isAct?'✓':''}</span>`;
-                    grid.appendChild(card);
-                    count++;
-                });
+            group.personas.forEach(p=>{
+                if(seenId.has(p.id))return;
 
-                if(count>0){
-                    c.appendChild(lbl);
-                    c.appendChild(grid);
-                }
+                // Resolve actual voice this persona would use
+                const resolvedVoice=pickVoice(p,lang);
+                const voiceKey=resolvedVoice
+                    ? resolvedVoice.name+'|'+resolvedVoice.lang
+                    : null;
+
+                // If voices are loaded, skip if this voice was already shown
+                if(allVoices.length && voiceKey && seenVoice.has(voiceKey))return;
+
+                seenId.add(p.id);
+                if(voiceKey)seenVoice.add(voiceKey);
+
+                groupHasCard=true;
+                const isAct=p.id===activePersona.id;
+                const card=document.createElement('div');
+                card.className='persona-card'+(isAct?' active':'');
+                card.onclick=()=>window.__sp(p.id);
+                card.innerHTML=
+                    `<span class="pe">${p.emoji}</span>`+
+                    `<span class="pn">${p.name}</span>`+
+                    `<span class="pd">${p.desc}</span>`+
+                    `<span class="pb">${isAct?'✓':''}</span>`;
+                grid.appendChild(card);
             });
+
+            if(groupHasCard){
+                c.appendChild(lbl);
+                c.appendChild(grid);
+            }
         });
-    }
-    buildGrids();
+    });
+}
+
 
     window.__sp=pid=>{
         const lang=getLang();
@@ -986,3 +993,4 @@ function initApp(){
 </script>
 </body>
 </html>
+
