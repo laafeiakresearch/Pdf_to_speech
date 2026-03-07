@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PDF Pronunciation Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+        :root{
+            --primary:#6c63ff;--accent:#00e5ff;--dark:#0f0f1a;
+            --card:#1a1a2e;--card2:#16213e;--text:#e0e0ff;
+            --muted:#8888aa;--success:#00e676;--radius:16px;--nav-h:60px;
+        }
+        body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+        body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(108,99,255,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,229,255,.1) 0%,transparent 50%);pointer-events:none;z-index:0;}
+        .app-layout{position:relative;z-index:1;display:flex;gap:16px;padding:16px;max-width:1400px;margin:0 auto;min-height:100vh;}
+        .left-panel{width:320px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;}
+        .main-panel{flex:1;display:flex;flex-direction:column;gap:14px;min-width:0;}
+        .right-panel{width:210px;flex-shrink:0;}
+        .mobile-header{display:none;background:var(--card);border-bottom:1px solid rgba(108,99,255,.2);padding:0 12px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;height:50px;gap:8px;}
+        .mobile-header h1{font-size:.88em;font-weight:800;background:linear-gradient(135deg,#6c63ff,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex:1;text-align:center;}
+        .mic-btn{width:36px;height:36px;border-radius:50%;border:none;background:linear-gradient(135deg,#6c63ff,#00e5ff);color:white;font-size:1em;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(108,99,255,.4);transition:transform .2s;}
+        .mic-btn:active{transform:scale(.9);}
+        .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:2px solid rgba(108,99,255,.3);z-index:500;height:var(--nav-h);padding-bottom:env(safe-area-inset-bottom,0px);}
+        .bottom-nav-tabs{display:flex;height:100%;}
+        .nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--muted);font-size:.68em;font-weight:700;border:none;background:none;font-family:'Inter',sans-serif;transition:color .2s;padding:6px 4px;}
+        .nav-tab .ti{font-size:1.5em;line-height:1;}
+        .nav-tab.active{color:var(--primary);}
+        .nav-tab.active .ti{filter:drop-shadow(0 0 6px rgba(108,99,255,.8));}
+        .mobile-page{display:none;padding:8px 8px 0;}
+        .mobile-page.active{display:block;}
+        .card{background:var(--card);border:1px solid rgba(108,99,255,.2);border-radius:var(--radius);padding:14px;}
+        .card-title{font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--primary);margin-bottom:11px;}
+        .app-header{text-align:center;padding:8px 0 4px;}
+        .app-header .logo{font-size:2em;animation:float 3s ease-in-out infinite;display:inline-block;cursor:pointer;}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        .app-header h1{font-size:1.4em;font-weight:800;background:linear-gradient(135deg,#6c63ff,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .app-header p{color:var(--muted);font-size:.78em;margin-top:3px;}
+        .control-group{margin-bottom:10px;}
+        .control-group:last-child{margin-bottom:0;}
+        .control-group label{display:block;font-size:.71em;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+        .control-group select{width:100%;background:var(--card2);border:1px solid rgba(108,99,255,.3);border-radius:10px;color:var(--text);padding:10px 11px;font-size:.87em;font-family:'Inter',sans-serif;cursor:pointer;outline:none;min-height:44px;}
+        .persona-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+        .persona-card{background:var(--card2);border:2px solid rgba(108,99,255,.18);border-radius:11px;padding:8px 4px;cursor:pointer;text-align:center;transition:all .2s;position:relative;min-height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+        .persona-card:active{transform:scale(.93);}
+        .persona-card.active{border-color:var(--primary);background:rgba(108,99,255,.18);box-shadow:0 0 14px rgba(108,99,255,.4);}
+        .persona-card .pe{font-size:1.5em;line-height:1;}
+        .persona-card .pn{font-size:.68em;font-weight:700;color:var(--text);}
+        .persona-card.active .pn{color:var(--accent);}
+        .persona-card .pd{font-size:.56em;color:var(--muted);line-height:1.2;}
+        .persona-card .pb{position:absolute;top:3px;right:4px;font-size:.54em;background:rgba(108,99,255,.2);color:var(--primary);padding:2px 4px;border-radius:7px;font-weight:700;}
+        .persona-card.active .pb{background:var(--primary);color:white;}
+        .persona-section{font-size:.63em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin:10px 0 5px;padding-left:2px;display:flex;align-items:center;gap:5px;}
+        .persona-section::after{content:'';flex:1;height:1px;background:rgba(108,99,255,.15);}
+        .ts-card{background:linear-gradient(135deg,rgba(108,99,255,.1),rgba(0,229,255,.05));border:1.5px solid rgba(108,99,255,.3);border-radius:var(--radius);padding:14px;}
+        .ts-row{display:flex;gap:8px;align-items:flex-end;}
+        .ts-textarea{flex:1;background:var(--card2);border:1.5px solid rgba(108,99,255,.25);border-radius:10px;color:var(--text);padding:10px 12px;font-size:.9em;font-family:'Inter',sans-serif;outline:none;min-height:76px;resize:vertical;transition:border-color .2s;line-height:1.5;}
+        .ts-textarea:focus{border-color:var(--primary);}
+        .ts-speak-btn{width:48px;height:48px;border-radius:50%;border:none;background:linear-gradient(135deg,#6c63ff,#00e5ff);color:white;font-size:1.3em;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(108,99,255,.5);transition:all .18s;}
+        .ts-speak-btn:active{transform:scale(.88);}
+        .ts-speak-btn.speaking{background:linear-gradient(135deg,#ff4444,#ff8800);animation:spulse .6s ease-in-out infinite;}
+        @keyframes spulse{0%,100%{box-shadow:0 0 0 0 rgba(255,68,68,.5)}50%{box-shadow:0 0 0 10px rgba(255,68,68,0)}}
+        .ts-hint{font-size:.68em;color:var(--muted);margin-top:6px;}
+        .slider-row{display:flex;align-items:center;gap:8px;}
+        .slider-row input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:rgba(108,99,255,.3);border-radius:2px;outline:none;}
+        .slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--primary);border-radius:50%;cursor:pointer;}
+        .slider-val{font-size:.79em;color:var(--primary);font-weight:600;width:34px;text-align:right;}
+        .test-row{display:flex;gap:7px;margin-top:10px;}
+        .test-row input{flex:1;background:var(--card2);border:1px solid rgba(108,99,255,.3);border-radius:10px;color:var(--text);padding:10px 11px;font-size:.87em;font-family:'Inter',sans-serif;outline:none;min-width:0;min-height:44px;}
+        .test-row input:focus{border-color:var(--primary);}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 14px;border-radius:25px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.86em;font-weight:600;transition:all .2s;white-space:nowrap;min-height:44px;}
+        .btn-primary{background:linear-gradient(135deg,#6c63ff,#5a52d5);color:white;box-shadow:0 3px 14px rgba(108,99,255,.4);}
+        .btn-primary:active{transform:scale(.95);}
+        .btn-secondary{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.4);color:var(--text);}
+        .btn-secondary:active{background:rgba(108,99,255,.25);}
+        .btn-success{background:linear-gradient(135deg,#00c853,#00e676);color:#0a1a0a;}
+        .btn:disabled{opacity:.4;cursor:not-allowed;}
+        .upload-area{border:2px dashed rgba(108,99,255,.4);border-radius:var(--radius);padding:20px 14px;text-align:center;cursor:pointer;transition:all .3s;background:rgba(108,99,255,.03);}
+        .upload-area:hover,.upload-area.drag{border-color:var(--primary);background:rgba(108,99,255,.08);}
+        .upload-area input{display:none;}
+        .upload-area label{font-size:.95em;color:var(--primary);cursor:pointer;display:block;margin-bottom:3px;font-weight:600;}
+        .ue{font-size:2em;display:block;margin-bottom:7px;}
+        #toolbar,.m-toolbar-wrap{display:none;}
+        .m-toolbar-wrap.visible{display:block;margin-bottom:8px;}
+        .m-toolbar-inner{display:flex;align-items:center;gap:6px;justify-content:space-between;}
+        .zoom-bar{display:flex;align-items:center;gap:5px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25);border-radius:22px;padding:4px 8px;}
+        .zoom-btn{width:34px;height:34px;border-radius:50%;border:none;background:rgba(108,99,255,.2);color:var(--text);font-size:1.1em;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+        .zoom-btn:active{background:var(--primary);transform:scale(.9);}
+        .zoom-label{font-size:.72em;color:var(--primary);font-weight:700;min-width:36px;text-align:center;}
+        .page-badge{background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);padding:7px 12px;border-radius:20px;font-weight:600;font-size:.82em;color:var(--primary);white-space:nowrap;}
+        .toolbar-inner{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between;}
+        .status-bar{display:none;padding:7px 12px;border-radius:10px;font-weight:600;font-size:.82em;text-align:center;margin-bottom:8px;}
+        .pdf-outer{width:100%;overflow:auto;background:#111122;border-radius:12px;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;}
+        .pdf-outer.mobile{min-height:calc(100dvh - 230px);max-height:calc(100dvh - 230px);}
+        .pdf-wrap{width:100%;min-height:72vh;overflow-y:auto;overflow-x:auto;background:#111122;border-radius:var(--radius);padding:10px;display:flex;flex-direction:column;align-items:center;scrollbar-width:thin;scrollbar-color:var(--primary) transparent;}
+        .pdf-wrap::-webkit-scrollbar{width:4px;}
+        .pdf-wrap::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+        .pdf-inner{display:flex;flex-direction:column;align-items:center;padding:10px;transform-origin:top center;transition:transform .2s ease;}
+        .page-wrapper{position:relative;margin-bottom:12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.5);overflow:hidden;flex-shrink:0;}
+        canvas{display:block;}
+        .textLayer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:5;cursor:pointer;touch-action:none;}
+        .textLayer span{color:transparent;position:absolute;white-space:pre;cursor:pointer;transform-origin:0% 0%;line-height:1;border-radius:3px;transition:background .15s;padding:3px 2px;margin:-3px -2px;}
+        .textLayer span:hover{background:rgba(108,99,255,.3)!important;}
+        .textLayer span.hl{background:rgba(108,99,255,.25)!important;}
+        .textLayer span.clicked{background:rgba(0,229,255,.4)!important;animation:wordPop .3s ease;}
+        @keyframes wordPop{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+        #m-sel-caption{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 10px);background:var(--card);border:2px solid var(--primary);border-radius:16px;padding:10px 14px;z-index:900;max-width:88vw;box-shadow:0 8px 32px rgba(108,99,255,.5);animation:selIn .2s ease;}
+        #m-sel-caption.show{display:block;}
+        @keyframes selIn{from{transform:translateX(-50%) translateY(14px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+        .sel-cap-text{font-size:.82em;color:var(--muted);margin-bottom:8px;max-width:260px;word-break:break-word;line-height:1.4;}
+        .sel-cap-text strong{color:var(--accent);}
+        .sel-cap-btns{display:flex;gap:7px;}
+        #selection-bar{display:none;position:fixed;left:50%;transform:translateX(-50%);top:80px;background:var(--card);border:1px solid rgba(108,99,255,.4);border-radius:40px;padding:9px 14px;gap:9px;align-items:center;box-shadow:0 8px 36px rgba(0,0,0,.5);z-index:800;max-width:90vw;}
+        #selection-bar.visible{display:flex;}
+        #m-toast{display:none;position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-80px);background:linear-gradient(135deg,#6c63ff,#00e5ff);color:white;padding:9px 18px;border-radius:40px;font-weight:700;font-size:.86em;box-shadow:0 6px 28px rgba(108,99,255,.55);z-index:9999;transition:transform .3s cubic-bezier(.175,.885,.32,1.275);text-align:center;max-width:80vw;pointer-events:none;}
+        #m-toast.show{transform:translateX(-50%) translateY(0);}
+        #speak-bubble{position:fixed;left:50%;transform:translateX(-50%) translateY(90px);background:linear-gradient(135deg,#6c63ff,#00e5ff);color:white;padding:11px 20px;border-radius:40px;font-weight:700;box-shadow:0 8px 32px rgba(108,99,255,.55);z-index:600;transition:transform .35s cubic-bezier(.175,.885,.32,1.275);text-align:center;max-width:78vw;pointer-events:none;bottom:28px;}
+        #speak-bubble.show{transform:translateX(-50%) translateY(0);}
+        .bl{font-size:.67em;opacity:.88;margin-bottom:2px;}
+        .bw{font-size:1.02em;word-break:break-word;}
+        .wave-bars{display:flex;gap:3px;align-items:center;height:13px;justify-content:center;margin-top:4px;}
+        .wave-bar{width:3px;background:white;border-radius:2px;animation:wave .7s ease-in-out infinite;}
+        .wave-bar:nth-child(1){animation-delay:.0s;height:4px}.wave-bar:nth-child(2){animation-delay:.1s;height:11px}
+        .wave-bar:nth-child(3){animation-delay:.2s;height:7px}.wave-bar:nth-child(4){animation-delay:.3s;height:13px}
+        .wave-bar:nth-child(5){animation-delay:.4s;height:5px}
+        @keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+        .modal-overlay.show{display:flex;}
+        .modal-box{background:var(--card);border:1px solid rgba(108,99,255,.4);border-radius:20px;padding:28px 24px;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:modalIn .3s cubic-bezier(.175,.885,.32,1.275);}
+        @keyframes modalIn{from{transform:scale(.85) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+        .modal-mic-icon{font-size:3em;margin-bottom:10px;display:block;animation:float 2s ease-in-out infinite;}
+        .modal-title{font-size:1.1em;font-weight:800;background:linear-gradient(135deg,#6c63ff,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+        .modal-subtitle{font-size:.82em;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+        .modal-email-row{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+        .email-link{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid rgba(108,99,255,.3);border-radius:12px;padding:12px 14px;text-decoration:none;color:var(--text);transition:all .2s;font-size:.84em;}
+        .email-link:hover,.email-link:active{border-color:var(--primary);background:rgba(108,99,255,.15);color:var(--primary);}
+        .email-link .e-icon{font-size:1.3em;flex-shrink:0;}
+        .email-link .e-addr{font-weight:600;word-break:break-all;text-align:left;}
+        .email-link .e-label{font-size:.75em;color:var(--muted);text-align:left;}
+        .modal-close{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(108,99,255,.3);background:rgba(108,99,255,.08);color:var(--text);font-family:'Inter',sans-serif;font-size:.88em;font-weight:600;cursor:pointer;transition:all .2s;}
+        .modal-close:hover{background:rgba(108,99,255,.2);}
+        .activate-banner{background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(0,229,255,.08));border:1px solid rgba(108,99,255,.3);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center;}
+        .activate-banner p{font-size:.8em;color:var(--muted);margin-bottom:10px;line-height:1.5;}
+        .lang-preview-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.28);border-radius:20px;padding:5px 12px;font-size:.75em;color:var(--accent);font-weight:600;margin-top:8px;width:100%;justify-content:center;min-height:32px;word-break:break-word;text-align:center;line-height:1.3;}
+        .history-panel{position:sticky;top:16px;}
+        .history-list{display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 180px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--primary) transparent;}
+        .history-chip{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:10px 12px;font-size:.83em;cursor:pointer;transition:all .2s;color:var(--text);display:flex;align-items:center;gap:6px;word-break:break-word;min-height:44px;}
+        .history-chip:hover{background:rgba(108,99,255,.3);}
+        .no-history{color:var(--muted);font-size:.82em;text-align:center;padding:26px 0;}
+        .engine-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:.71em;font-weight:700;margin-top:9px;}
+        .engine-tag.ok{background:rgba(0,200,83,.12);color:var(--success);border:1px solid rgba(0,200,83,.3);}
+        .engine-tag.warn{background:rgba(255,193,7,.12);color:#ffc107;border:1px solid rgba(255,193,7,.3);}
+        @media(max-width:768px){
+            .app-layout{display:none;}
+            .mobile-header{display:flex;}
+            .bottom-nav{display:block;}
+            #speak-bubble{display:none!important;}
+            #selection-bar{display:none!important;}
+        }
+        @media(min-width:769px){
+            .mobile-header,.bottom-nav,.mobile-page,#m-toast,#m-sel-caption{display:none!important;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="modal-overlay" id="contact-modal">
+    <div class="modal-box">
+        <span class="modal-mic-icon">🎤</span>
+        <div class="modal-title">PDF Pronunciation Pro</div>
+        <div class="modal-subtitle">Have questions, feedback or need support?<br>Reach us anytime!</div>
+        <div class="modal-email-row">
+            <a class="email-link" href="mailto:laafeiakresearch@gmail.com"><span class="e-icon">🔬</span><div><div class="e-addr">laafeiakresearch@gmail.com</div><div class="e-label">Research & Academic Enquiries</div></div></a>
+            <a class="email-link" href="mailto:laafeiak@gmail.com"><span class="e-icon">💬</span><div><div class="e-addr">laafeiak@gmail.com</div><div class="e-label">General Support & Feedback</div></div></a>
+        </div>
+        <button class="modal-close" id="modal-close-btn">✕ Close</button>
+    </div>
+</div>
+
+<div class="mobile-header">
+    <button class="mic-btn" id="m-mic-btn">🎤</button>
+    <h1>PDF Pronunciation Pro</h1>
+    <button class="btn btn-primary" id="m-btn-activate" style="padding:6px 10px;font-size:.74em;min-height:34px;flex-shrink:0;">🔊 Activate</button>
+</div>
+<div id="m-toast"></div>
+
+<div id="m-sel-caption">
+    <div class="sel-cap-text">🖊️ Selected: <strong id="m-sel-text-preview">—</strong></div>
+    <div class="sel-cap-btns">
+        <button class="btn btn-success" id="m-sel-speak-btn" style="flex:1;padding:9px 8px;font-size:.82em;">▶ Speak Selection</button>
+        <button class="btn btn-secondary" id="m-sel-dismiss-btn" style="padding:9px 12px;font-size:.82em;">✕</button>
+    </div>
+</div>
+
+<div class="mobile-page active" id="m-page-settings">
+    <div class="activate-banner" id="m-activate-banner">
+        <p>🎙️ Activate voice engine first, then pick persona & language. Then go to the Reader tab.</p>
+        <button class="btn btn-primary" id="m-btn-activate2" style="width:100%;justify-content:center;">🔊 Activate Voice Engine</button>
+    </div>
+    <div class="ts-card" style="margin-bottom:10px;">
+        <div class="card-title">⌨️ Type &amp; Speak</div>
+        <div class="ts-row">
+            <textarea class="ts-textarea" id="m-ts-input" placeholder="Type anything here then tap 🔊 to hear it…">Hello! How are you today?</textarea>
+            <button class="ts-speak-btn" id="m-ts-btn">🔊</button>
+        </div>
+        <div class="ts-hint">✏️ Type text above → tap 🔊 to hear in your selected voice &amp; style</div>
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+        <div class="card-title">🎭 Voice Persona</div>
+        <div id="m-persona-container"></div>
+        <div id="m-engine-tag" class="engine-tag warn">🟡 Tap Activate above first</div>
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+        <div class="card-title">🌐 Language</div>
+        <div class="control-group" style="margin-bottom:0;">
+            <select id="m-lang-select">
+                <option value="en" selected>🇬🇧 English</option>
+                <option value="de">🇩🇪 Deutsch</option><option value="ja">🇯🇵 Japanese</option>
+                <option value="fr">🇫🇷 French</option><option value="zh">🇨🇳 Chinese</option>
+                <option value="hi">🇮🇳 Hindi</option>
+                <option value="af">🇿🇦 Afrikaans</option><option value="ar">🇸🇦 Arabic</option>
+                <option value="bg">🇧🇬 Bulgarian</option><option value="bn">🇧🇩 Bengali</option>
+                <option value="ca">🇪🇸 Catalan</option><option value="cs">🇨🇿 Czech</option>
+                <option value="da">🇩🇰 Danish</option><option value="el">🇬🇷 Greek</option>
+                <option value="es">🇪🇸 Spanish</option><option value="fi">🇫🇮 Finnish</option>
+                <option value="gu">🇮🇳 Gujarati</option><option value="he">🇮🇱 Hebrew</option>
+                <option value="hr">🇭🇷 Croatian</option><option value="hu">🇭🇺 Hungarian</option>
+                <option value="id">🇮🇩 Indonesian</option><option value="it">🇮🇹 Italian</option>
+                <option value="kn">🇮🇳 Kannada</option><option value="ko">🇰🇷 Korean</option>
+                <option value="lt">🇱🇹 Lithuanian</option><option value="lv">🇱🇻 Latvian</option>
+                <option value="ml">🇮🇳 Malayalam</option><option value="mr">🇮🇳 Marathi</option>
+                <option value="ms">🇲🇾 Malay</option><option value="nl">🇳🇱 Dutch</option>
+                <option value="nb">🇳🇴 Norwegian</option><option value="pa">🇮🇳 Punjabi</option>
+                <option value="pl">🇵🇱 Polish</option><option value="pt">🇧🇷 Portuguese</option>
+                <option value="ro">🇷🇴 Romanian</option><option value="ru">🇷🇺 Russian</option>
+                <option value="sk">🇸🇰 Slovak</option><option value="sl">🇸🇮 Slovenian</option>
+                <option value="sq">🇦🇱 Albanian</option><option value="sr">🇷🇸 Serbian</option>
+                <option value="sv">🇸🇪 Swedish</option><option value="sw">🇰🇪 Swahili</option>
+                <option value="ta">🇮🇳 Tamil</option><option value="te">🇮🇳 Telugu</option>
+                <option value="th">🇹🇭 Thai</option><option value="tl">🇵🇭 Filipino</option>
+                <option value="tr">🇹🇷 Turkish</option><option value="uk">🇺🇦 Ukrainian</option>
+                <option value="ur">🇵🇰 Urdu</option><option value="vi">🇻🇳 Vietnamese</option>
+                <option value="zu">🇿🇦 Zulu</option>
+            </select>
+            <div class="lang-preview-pill" id="m-lang-pill">💬 "Hello! How are you today?"</div>
+        </div>
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+        <div class="card-title">🎛️ Fine Tuning</div>
+        <div class="control-group"><label>🚀 Speed</label><div class="slider-row"><input type="range" id="m-rate-slider" min="0.5" max="1.8" step="0.05" value="1"><span class="slider-val" id="m-rate-val">1.00</span></div></div>
+        <div class="control-group"><label>🎵 Pitch</label><div class="slider-row"><input type="range" id="m-pitch-slider" min="0.5" max="2" step="0.05" value="1"><span class="slider-val" id="m-pitch-val">1.00</span></div></div>
+        <div class="control-group" style="margin-bottom:0;"><label>🔊 Volume</label><div class="slider-row"><input type="range" id="m-vol-slider" min="0" max="1" step="0.05" value="1"><span class="slider-val" id="m-vol-val">1.00</span></div></div>
+    </div>
+    <div style="height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 8px);"></div>
+</div>
+
+<div class="mobile-page" id="m-page-reader">
+    <div id="m-sel-hint" style="display:none;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.25);border-radius:10px;padding:7px 12px;margin-bottom:8px;font-size:.76em;color:var(--muted);text-align:center;">
+        👆 <strong style="color:var(--primary);">Tap</strong> = 1 word &nbsp;|&nbsp; <strong style="color:var(--accent);">Long-press drag</strong> = select sentence → speak
+    </div>
+    <div class="upload-area" id="m-upload-area" style="margin-bottom:8px;">
+        <input type="file" id="m-file-input" accept=".pdf">
+        <span class="ue">📂</span>
+        <label for="m-file-input">Tap to Upload PDF</label>
+        <p style="color:var(--muted);font-size:.76em;margin-top:2px;">All multi-page PDFs supported</p>
+    </div>
+    <div class="m-toolbar-wrap" id="m-toolbar">
+        <div class="card" style="padding:10px 10px 8px;">
+            <div class="m-toolbar-inner">
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <button class="btn btn-secondary" id="m-btn-prev" style="padding:8px 14px;min-height:38px;">⬅</button>
+                    <div class="page-badge" id="m-page-info">1/1</div>
+                    <button class="btn btn-secondary" id="m-btn-next" style="padding:8px 14px;min-height:38px;">➡</button>
+                </div>
+                <div class="zoom-bar">
+                    <button class="zoom-btn" id="m-zoom-out">−</button>
+                    <span class="zoom-label" id="m-zoom-label">100%</span>
+                    <button class="zoom-btn" id="m-zoom-in">+</button>
+                    <button class="zoom-btn" id="m-zoom-reset" style="font-size:.7em;width:30px;height:30px;">↺</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="status-bar" id="m-status"></div>
+    <div class="pdf-outer mobile" id="m-pdf-outer">
+        <div class="pdf-inner" id="m-pdf-inner">
+            <div style="color:var(--muted);text-align:center;padding:50px 16px;font-size:.9em;">📄 Go to <strong style="color:var(--primary);">🎛️ Voice</strong> tab first to activate,<br>then upload a PDF here.</div>
+        </div>
+    </div>
+    <div style="height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 8px);"></div>
+</div>
+
+<div class="bottom-nav">
+    <div class="bottom-nav-tabs">
+        <button class="nav-tab active" data-tab="m-page-settings"><span class="ti">🎛️</span>Voice</button>
+        <button class="nav-tab" data-tab="m-page-reader"><span class="ti">📄</span>Reader</button>
+    </div>
+</div>
+
+<div class="app-layout">
+    <div class="left-panel">
+        <div class="app-header">
+            <span class="logo" id="d-mic-btn" title="Contact Us">🎤</span>
+            <h1>PDF Pronunciation Pro</h1>
+            <p>Click mic icon to contact us</p>
+        </div>
+        <div class="ts-card">
+            <div class="card-title">⌨️ Type &amp; Speak</div>
+            <div class="ts-row">
+                <textarea class="ts-textarea" id="d-ts-input" placeholder="Type anything here then click 🔊 to hear it…">Hello! How are you today?</textarea>
+                <button class="ts-speak-btn" id="d-ts-btn">🔊</button>
+            </div>
+            <div class="ts-hint">✏️ Type text → click 🔊 to hear in your selected voice style</div>
+        </div>
+        <div class="card">
+            <div class="card-title">🎭 Voice Persona</div>
+            <div id="d-persona-container"></div>
+            <div id="d-engine-tag" class="engine-tag warn">🟡 Click Activate</div>
+        </div>
+        <div class="card">
+            <div class="card-title">🌐 Language & Tuning</div>
+            <div class="control-group">
+                <label>Language</label>
+                <select id="lang-select">
+                    <option value="en" selected>🇬🇧 English</option>
+                    <option value="de">🇩🇪 Deutsch</option><option value="ja">🇯🇵 Japanese</option>
+                    <option value="fr">🇫🇷 French</option><option value="zh">🇨🇳 Chinese</option>
+                    <option value="hi">🇮🇳 Hindi</option>
+                    <option value="af">🇿🇦 Afrikaans</option><option value="ar">🇸🇦 Arabic</option>
+                    <option value="bg">🇧🇬 Bulgarian</option><option value="bn">🇧🇩 Bengali</option>
+                    <option value="ca">🇪🇸 Catalan</option><option value="cs">🇨🇿 Czech</option>
+                    <option value="da">🇩🇰 Danish</option><option value="el">🇬🇷 Greek</option>
+                    <option value="es">🇪🇸 Spanish</option><option value="fi">🇫🇮 Finnish</option>
+                    <option value="gu">🇮🇳 Gujarati</option><option value="he">🇮🇱 Hebrew</option>
+                    <option value="hr">🇭🇷 Croatian</option><option value="hu">🇭🇺 Hungarian</option>
+                    <option value="id">🇮🇩 Indonesian</option><option value="it">🇮🇹 Italian</option>
+                    <option value="kn">🇮🇳 Kannada</option><option value="ko">🇰🇷 Korean</option>
+                    <option value="lt">🇱🇹 Lithuanian</option><option value="lv">🇱🇻 Latvian</option>
+                    <option value="ml">🇮🇳 Malayalam</option><option value="mr">🇮🇳 Marathi</option>
+                    <option value="ms">🇲🇾 Malay</option><option value="nl">🇳🇱 Dutch</option>
+                    <option value="nb">🇳🇴 Norwegian</option><option value="pa">🇮🇳 Punjabi</option>
+                    <option value="pl">🇵🇱 Polish</option><option value="pt">🇧🇷 Portuguese</option>
+                    <option value="ro">🇷🇴 Romanian</option><option value="ru">🇷🇺 Russian</option>
+                    <option value="sk">🇸🇰 Slovak</option><option value="sl">🇸🇮 Slovenian</option>
+                    <option value="sq">🇦🇱 Albanian</option><option value="sr">🇷🇸 Serbian</option>
+                    <option value="sv">🇸🇪 Swedish</option><option value="sw">🇰🇪 Swahili</option>
+                    <option value="ta">🇮🇳 Tamil</option><option value="te">🇮🇳 Telugu</option>
+                    <option value="th">🇹🇭 Thai</option><option value="tl">🇵🇭 Filipino</option>
+                    <option value="tr">🇹🇷 Turkish</option><option value="uk">🇺🇦 Ukrainian</option>
+                    <option value="ur">🇵🇰 Urdu</option><option value="vi">🇻🇳 Vietnamese</option>
+                    <option value="zu">🇿🇦 Zulu</option>
+                </select>
+                <div class="lang-preview-pill" id="d-lang-pill" style="margin-top:8px;">💬 "Hello! How are you today?"</div>
+            </div>
+            <div class="control-group"><label>🚀 Speed</label><div class="slider-row"><input type="range" id="rate-slider" min="0.5" max="1.8" step="0.05" value="1"><span class="slider-val" id="rate-val">1.00</span></div></div>
+            <div class="control-group"><label>🎵 Pitch</label><div class="slider-row"><input type="range" id="pitch-slider" min="0.5" max="2" step="0.05" value="1"><span class="slider-val" id="pitch-val">1.00</span></div></div>
+            <div class="control-group"><label>🔊 Volume</label><div class="slider-row"><input type="range" id="vol-slider" min="0" max="1" step="0.05" value="1"><span class="slider-val" id="vol-val">1.00</span></div></div>
+            <div class="test-row">
+                <input type="text" id="test-input" value="Hello! How are you today?" placeholder="Test voice...">
+                <button class="btn btn-primary" id="btn-activate">🔊 Activate</button>
+            </div>
+        </div>
+        <div class="upload-area" id="upload-area">
+            <input type="file" id="file-input" accept=".pdf">
+            <span class="ue">📂</span>
+            <label for="file-input">Step 2 — Upload PDF</label>
+            <p style="color:var(--muted);font-size:.77em;">Click or drag PDF here</p>
+        </div>
+    </div>
+    <div class="main-panel">
+        <div class="card" id="toolbar">
+            <div class="toolbar-inner">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <button class="btn btn-secondary" id="btn-prev">⬅ Prev</button>
+                    <div class="page-badge" id="page-info">Page 1/1</div>
+                    <button class="btn btn-secondary" id="btn-next">Next ➡</button>
+                </div>
+                <span style="color:var(--muted);font-size:.79em;">💡 Click word | Drag to select sentence → bar appears</span>
+            </div>
+        </div>
+        <div class="status-bar" id="status"></div>
+        <div class="pdf-wrap" id="pdf-container">
+            <div style="color:var(--muted);text-align:center;padding:60px 20px;font-size:.9em;">📄 Upload a PDF to start</div>
+        </div>
+    </div>
+    <div class="right-panel">
+        <div class="card history-panel">
+            <div class="card-title">🕘 History</div>
+            <div class="history-list" id="history-list"><div class="no-history">No words yet.</div></div>
+        </div>
+    </div>
+</div>
+
+<div id="selection-bar">
+    <span style="font-size:.83em;color:var(--muted);">🖊️</span>
+    <span id="sel-preview" style="color:var(--primary);font-weight:700;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.85em;"></span>
+    <button class="btn btn-success" id="btn-speak-sel" style="padding:8px 14px;min-height:38px;">▶ Speak</button>
+    <button class="btn btn-secondary" id="btn-dismiss-sel" style="padding:8px 10px;min-height:38px;">✕</button>
+</div>
+
+<div id="speak-bubble">
+    <div class="bl" id="bubble-label">🔊 Speaking</div>
+    <div class="bw" id="bubble-word">—</div>
+    <div class="wave-bars"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+</div>
+
+<script>
+const LANG_SAMPLES={
+    en:"Hello! How are you today?",de:"Hallo! Wie geht es dir heute?",
+    ja:"こんにちは！今日はお元気ですか？",fr:"Bonjour! Comment allez-vous aujourd'hui?",
+    zh:"你好！你今天怎么样？",hi:"नमस्ते! आज आप कैसे हैं?",
+    af:"Hallo! Hoe gaan dit vandag met jou?",ar:"مرحباً! كيف حالك اليوم؟",
+    bg:"Здравейте! Как сте днес?",bn:"হ্যালো! আজ আপনি কেমন আছেন?",
+    ca:"Hola! Com estàs avui?",cs:"Ahoj! Jak se dnes máš?",
+    da:"Hej! Hvordan har du det i dag?",el:"Γεια σου! Πώς είσαι σήμερα;",
+    es:"¡Hola! ¿Cómo estás hoy?",fi:"Hei! Miten voit tänään?",
+    gu:"હેલો! આજે તમે કેમ છો?",he:"שלום! איך אתה היום?",
+    hr:"Bok! Kako si danas?",hu:"Szia! Hogy vagy ma?",
+    id:"Halo! Apa kabar hari ini?",it:"Ciao! Come stai oggi?",
+    kn:"ಹಲೋ! ಇಂದು ನೀವು ಹೇಗಿದ್ದೀರಿ?",ko:"안녕하세요! 오늘 어떻게 지내세요?",
+    lt:"Labas! Kaip šiandien jautiesi?",lv:"Sveiki! Kā jums šodien iet?",
+    ml:"ഹലോ! ഇന്ന് നിങ്ങൾക്ക് എങ്ങനെ ഉണ്ട്?",mr:"नमस्कार! आज तुम्ही कसे आहात?",
+    ms:"Helo! Apa khabar hari ini?",nl:"Hallo! Hoe gaat het vandaag met je?",
+    nb:"Hei! Hvordan har du det i dag?",pa:"ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਅੱਜ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ?",
+    pl:"Cześć! Jak się dzisiaj czujesz?",pt:"Olá! Como você está hoje?",
+    ro:"Bună ziua! Cum ești azi?",ru:"Привет! Как ты сегодня?",
+    sk:"Ahoj! Ako sa dnes máš?",sl:"Pozdravljeni! Kako ste danes?",
+    sq:"Përshëndetje! Si jeni sot?",sr:"Здраво! Како си данас?",
+    sv:"Hej! Hur mår du idag?",sw:"Habari! Habari za leo?",
+    ta:"வணக்கம்! இன்று நீங்கள் எப்படி இருக்கிறீர்கள்?",
+    te:"హలో! మీరు ఈ రోజు ఎలా ఉన్నారు?",
+    th:"สวัสดี! วันนี้คุณเป็นอย่างไรบ้าง?",tl:"Kamusta! Kumusta ka ngayon?",
+    tr:"Merhaba! Bugün nasılsın?",uk:"Привіт! Як ти сьогодні?",
+    ur:"ہیلو! آج آپ کیسے ہیں؟",vi:"Xin chào! Hôm nay bạn khỏe không?",
+    zu:"Sawubona! Unjani namuhla?"
+};
+const LANG_BCP={
+    en:'en-US',de:'de-DE',ja:'ja-JP',fr:'fr-FR',zh:'zh-CN',hi:'hi-IN',
+    af:'af',ar:'ar',bg:'bg',bn:'bn',ca:'ca',cs:'cs',da:'da',el:'el',
+    es:'es-ES',fi:'fi',gu:'gu',he:'he',hr:'hr',hu:'hu',id:'id',it:'it-IT',
+    kn:'kn',ko:'ko-KR',lt:'lt',lv:'lv',ml:'ml',mr:'mr',ms:'ms',nl:'nl-NL',
+    nb:'nb',pa:'pa',pl:'pl-PL',pt:'pt-BR',ro:'ro',ru:'ru-RU',sk:'sk',sl:'sl',
+    sq:'sq',sr:'sr',sv:'sv-SE',sw:'sw',ta:'ta-IN',te:'te-IN',th:'th',tl:'tl',
+    tr:'tr',uk:'uk',ur:'ur',vi:'vi',zu:'zu'
+};
+
+const BASE_GROUPS=[
+    {label:'👤 Natural Male',personas:[
+        {id:'oliver',  emoji:'👨‍💼',name:'Oliver',  desc:'Calm Pro',     pitch:0.88,rate:0.97,vol:1.0,idx:0,kw:['daniel','david','oliver','thomas','mark','reed','george']},
+        {id:'marcus',  emoji:'🎙️', name:'Marcus',  desc:'Broadcaster',  pitch:0.82,rate:1.02,vol:1.0,idx:1,kw:['alex','george','en-gb','uk english','luca','jorge']},
+        {id:'james',   emoji:'👨',  name:'James',   desc:'Deep Warm',    pitch:0.75,rate:0.93,vol:1.0,idx:2,kw:['james','ralph','fred','arthur','albert']},
+        {id:'leo',     emoji:'🧑‍🎓',name:'Leo',    desc:'Young Clear',  pitch:0.95,rate:1.08,vol:1.0,idx:3,kw:['lee','leon']},
+    ]},
+    {label:'👩 Natural Female',personas:[
+        {id:'sophia',  emoji:'👩‍💼',name:'Sophia',  desc:'Professional', pitch:1.08,rate:0.96,vol:1.0,idx:0,kw:['samantha','karen','susan','victoria','zira']},
+        {id:'emma',    emoji:'🌸',  name:'Emma',    desc:'Warm Gentle',  pitch:1.18,rate:0.90,vol:1.0,idx:1,kw:['emily','fiona','moira','tessa','alice','amelie']},
+        {id:'aria',    emoji:'🎤',  name:'Aria',    desc:'Crisp Clear',  pitch:1.12,rate:1.0, vol:1.0,idx:2,kw:['aria','google us english','ava','allison']},
+        {id:'nova',    emoji:'⭐',  name:'Nova',    desc:'Bright Fast',  pitch:1.22,rate:1.12,vol:1.0,idx:3,kw:['nova','vicki','nicky','petra']},
+    ]},
+    {label:'🎭 Character Voices',personas:[
+        {id:'elder',   emoji:'🧓',  name:'Elder',   desc:'Wise & Slow',  pitch:0.72,rate:0.72,vol:1.0,idx:1,kw:['fred','ralph','albert']},
+        {id:'kid',     emoji:'🧒',  name:'Kid',     desc:'Playful Fast', pitch:1.65,rate:1.10,vol:1.0,idx:2,kw:['junior','young']},
+        {id:'narrator',emoji:'📖',  name:'Narrator',desc:'Story Voice',  pitch:0.90,rate:0.85,vol:1.0,idx:0,kw:['daniel','thomas','oliver','reed']},
+        {id:'robot',   emoji:'🤖',  name:'Robot',   desc:'Synthetic',    pitch:0.45,rate:1.18,vol:1.0,idx:3,kw:['espeak']},
+        {id:'whisper', emoji:'🤫',  name:'Whisper', desc:'Soft Breathy', pitch:1.10,rate:0.76,vol:0.82,idx:1,kw:['karen','tessa','moira','fiona']},
+        {id:'drama',   emoji:'🎬',  name:'Drama',   desc:'Stage Actor',  pitch:0.80,rate:0.78,vol:1.0,idx:0,kw:['daniel','george','thomas','james']},
+    ]},
+    {label:'🌍 Accent Styles',personas:[
+        {id:'british', emoji:'🇬🇧', name:'British', desc:'UK Accent',    pitch:0.92,rate:0.94,vol:1.0,idx:0,kw:['daniel','oliver','hazel','kate','en-gb','uk english']},
+        {id:'aussie',  emoji:'🇦🇺', name:'Aussie',  desc:'AU Accent',    pitch:0.98,rate:1.05,vol:1.0,idx:1,kw:['karen','lee','en-au','australian']},
+        {id:'sage',    emoji:'🧑‍🏫',name:'Sage',   desc:'Neutral US',   pitch:1.00,rate:1.00,vol:1.0,idx:2,kw:['google us english','samantha','ava','en-us']},
+        {id:'cheerful',emoji:'😄',  name:'Cheerful',desc:'Upbeat Bright',pitch:1.35,rate:1.05,vol:1.0,idx:1,kw:['nova','ava','vicki','aria','nicky']},
+    ]},
+];
+
+const LANG_EXTRA={
+    en:[{label:'🇬🇧 English Styles',personas:[
+        {id:'en_anchor', emoji:'📺',name:'Anchor', desc:'News Style',   pitch:0.85,rate:0.98,vol:1.0,idx:0,kw:['daniel','reed','thomas']},
+        {id:'en_lecture',emoji:'🎓',name:'Lecture',desc:'Academic',     pitch:0.88,rate:0.88,vol:1.0,idx:1,kw:['david','oliver','mark']},
+        {id:'en_casual', emoji:'😊',name:'Casual', desc:'Friendly Chat',pitch:1.05,rate:1.06,vol:1.0,idx:2,kw:['ava','allison','samantha']},
+        {id:'en_intense',emoji:'😮',name:'Intense',desc:'Dramatic Read',pitch:0.78,rate:0.82,vol:1.0,idx:3,kw:['george','fred','ralph']},
+        {id:'en_gentle', emoji:'🌼',name:'Gentle', desc:'Soft & Slow',  pitch:1.15,rate:0.80,vol:0.88,idx:1,kw:['emily','fiona','tessa']},
+        {id:'en_energy', emoji:'⚡',name:'Energy', desc:'Fast & Bright',pitch:1.20,rate:1.18,vol:1.0,idx:2,kw:['nova','vicki','ava']},
+    ]}],
+    de:[{label:'🇩🇪 Deutsch Stile',personas:[
+        {id:'de_sprecher',emoji:'🗣️',name:'Sprecher', desc:'Nachrichtenstil',pitch:0.85,rate:0.95,vol:1.0,idx:0,kw:['anna','de-de','google deutsch','hans','stefan']},
+        {id:'de_maennl',  emoji:'👨', name:'Männlich', desc:'Ruhig & tief',  pitch:0.80,rate:0.93,vol:1.0,idx:1,kw:['hans','stefan','thomas','de-de']},
+        {id:'de_weibl',   emoji:'👩', name:'Weiblich', desc:'Natürlich',     pitch:1.10,rate:0.97,vol:1.0,idx:0,kw:['anna','de-de','google deutsch']},
+        {id:'de_schnell', emoji:'⚡', name:'Schnell',  desc:'Flüssig',       pitch:1.05,rate:1.15,vol:1.0,idx:0,kw:['anna','de-de']},
+        {id:'de_langsam', emoji:'🐢', name:'Langsam',  desc:'Deutlich',      pitch:0.90,rate:0.72,vol:1.0,idx:0,kw:['anna','de-de','hans']},
+        {id:'de_kind',    emoji:'🧒', name:'Kind',     desc:'Kinderstimme',  pitch:1.60,rate:1.10,vol:1.0,idx:0,kw:['anna','de-de']},
+    ]}],
+    ja:[{label:'🇯🇵 日本語スタイル',personas:[
+        {id:'ja_standard',emoji:'🗾',name:'標準',     desc:'ニュース風',pitch:1.00,rate:0.96,vol:1.0,idx:0,kw:['kyoko','ja-jp','google 日本語','haruka']},
+        {id:'ja_female',  emoji:'👩',name:'女性',     desc:'女性の声',  pitch:1.15,rate:0.94,vol:1.0,idx:0,kw:['kyoko','haruka','ja-jp']},
+        {id:'ja_male',    emoji:'👨',name:'男性',     desc:'男性の声',  pitch:0.88,rate:0.96,vol:1.0,idx:1,kw:['otoya','ja-jp']},
+        {id:'ja_hayai',   emoji:'⚡',name:'速い',     desc:'速い読み',  pitch:1.05,rate:1.18,vol:1.0,idx:0,kw:['kyoko','ja-jp']},
+        {id:'ja_slow',    emoji:'🐢',name:'ゆっくり', desc:'丁寧',      pitch:1.00,rate:0.70,vol:1.0,idx:0,kw:['kyoko','ja-jp']},
+        {id:'ja_anime',   emoji:'✨',name:'元気',     desc:'アニメ風',  pitch:1.45,rate:1.08,vol:1.0,idx:0,kw:['kyoko','ja-jp']},
+    ]}],
+    fr:[{label:'🇫🇷 Styles Français',personas:[
+        {id:'fr_neutre', emoji:'🗣️',name:'Neutre', desc:'Standard',     pitch:1.00,rate:0.97,vol:1.0,idx:0,kw:['amelie','thomas','fr-fr','google français']},
+        {id:'fr_femme',  emoji:'👩', name:'Femme',  desc:'Féminine',     pitch:1.12,rate:0.94,vol:1.0,idx:0,kw:['amelie','fr-fr']},
+        {id:'fr_homme',  emoji:'👨', name:'Homme',  desc:'Masculine',    pitch:0.85,rate:0.96,vol:1.0,idx:1,kw:['thomas','fr-fr','fr-be']},
+        {id:'fr_rapide', emoji:'⚡', name:'Rapide', desc:'Vif & fluide', pitch:1.05,rate:1.16,vol:1.0,idx:0,kw:['amelie','fr-fr']},
+        {id:'fr_grave',  emoji:'🎙️',name:'Grave',  desc:'Profond',      pitch:0.75,rate:0.88,vol:1.0,idx:1,kw:['thomas','fr-fr']},
+        {id:'fr_roman',  emoji:'📚', name:'Roman',  desc:'Narrateur',    pitch:0.92,rate:0.82,vol:1.0,idx:0,kw:['amelie','thomas','fr-fr']},
+    ]}],
+    zh:[{label:'🇨🇳 中文风格',personas:[
+        {id:'zh_biaozhun',emoji:'🗣️',name:'标准', desc:'新闻播报',pitch:1.00,rate:0.96,vol:1.0,idx:0,kw:['meijia','tingting','zh-cn','google 普通话']},
+        {id:'zh_nüsheng', emoji:'👩',name:'女声', desc:'温柔女声',pitch:1.12,rate:0.93,vol:1.0,idx:0,kw:['meijia','tingting','zh-cn']},
+        {id:'zh_nansheng',emoji:'👨',name:'男声', desc:'浑厚男声',pitch:0.82,rate:0.95,vol:1.0,idx:1,kw:['yunxi','zh-cn']},
+        {id:'zh_kuaisu',  emoji:'⚡',name:'快速', desc:'快速流畅',pitch:1.05,rate:1.18,vol:1.0,idx:0,kw:['meijia','zh-cn']},
+        {id:'zh_qingman', emoji:'🐢',name:'轻慢', desc:'清晰慢读',pitch:1.00,rate:0.70,vol:1.0,idx:0,kw:['meijia','zh-cn']},
+        {id:'zh_gushi',   emoji:'📖',name:'故事', desc:'讲故事风',pitch:0.95,rate:0.86,vol:1.0,idx:0,kw:['meijia','tingting','zh-cn']},
+    ]}],
+    hi:[{label:'🇮🇳 हिन्दी शैलियाँ',personas:[
+        {id:'hi_samachar',emoji:'📺',name:'समाचार',desc:'न्यूज़ स्टाइल',pitch:0.95,rate:0.97,vol:1.0,idx:0,kw:['lekha','raveena','hi-in','google हिन्दी']},
+        {id:'hi_nari',    emoji:'👩',name:'नारी',   desc:'महिला आवाज़', pitch:1.12,rate:0.94,vol:1.0,idx:0,kw:['lekha','raveena','hi-in']},
+        {id:'hi_purush',  emoji:'👨',name:'पुरुष',  desc:'पुरुष आवाज़', pitch:0.85,rate:0.96,vol:1.0,idx:1,kw:['heera','hi-in']},
+        {id:'hi_tez',     emoji:'⚡',name:'तेज़',   desc:'तेज़ बोलना',  pitch:1.05,rate:1.16,vol:1.0,idx:0,kw:['lekha','hi-in']},
+        {id:'hi_manda',   emoji:'🐢',name:'मंद',    desc:'स्पष्ट धीरे', pitch:1.00,rate:0.70,vol:1.0,idx:0,kw:['lekha','raveena','hi-in']},
+        {id:'hi_kahani',  emoji:'📖',name:'कहानी',  desc:'कहानी शैली',  pitch:0.92,rate:0.85,vol:1.0,idx:0,kw:['lekha','raveena','hi-in']},
+    ]}],
+};
+
+function getGroups(lang){return [...BASE_GROUPS,...(LANG_EXTRA[lang]||[])];}
+function getPersonas(lang){return getGroups(lang).flatMap(g=>g.personas);}
+
+const sc=document.createElement('script');
+sc.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+sc.onload=()=>{
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    initApp();
+};
+document.head.appendChild(sc);
+
+function initApp(){
+    const isMobile=()=>window.innerWidth<=768;
+    const $=id=>document.getElementById(id);
+
+    let pdfDoc=null,currentPage=1,totalPages=0;
+    let allVoices=[],activated=false;
+    let activePersona=BASE_GROUPS[0].personas[0];
+    let historyWords=[];
+    let mZoom=1.0,pinchStartDist=0,pinchStartZoom=1,isPinching=false;
+    let savedSelText='';
+
+    const mToast=$('m-toast'),dBubble=$('speak-bubble');
+    const mSelCaption=$('m-sel-caption'),mSelTextPreview=$('m-sel-text-preview');
+
+    const getLang  =()=>(isMobile()?$('m-lang-select'):$('lang-select'))?.value||'en';
+    const getRate  =()=>parseFloat((isMobile()?$('m-rate-slider'):$('rate-slider'))?.value||1);
+    const getPitch =()=>parseFloat((isMobile()?$('m-pitch-slider'):$('pitch-slider'))?.value||1);
+    const getVol   =()=>parseFloat((isMobile()?$('m-vol-slider'):$('vol-slider'))?.value||1);
+    const getLangSample=lang=>LANG_SAMPLES[lang]||LANG_SAMPLES.en;
+
+    function pickVoice(persona,lang){
+        const bcp=(LANG_BCP[lang]||lang).toLowerCase();
+        const pre=lang.toLowerCase();
+        let pool=allVoices.filter(v=>v.lang.toLowerCase()===bcp);
+        if(!pool.length)pool=allVoices.filter(v=>v.lang.toLowerCase().startsWith(pre));
+        if(!pool.length)pool=allVoices;
+        if(!pool.length)return null;
+        for(const k of(persona.kw||[])){
+            const v=pool.find(v=>v.name.toLowerCase().includes(k)||v.lang.toLowerCase().includes(k));
+            if(v)return v;
+        }
+        return pool[(persona.idx||0)%pool.length]||pool[0];
+    }
+
+    // ── NEW: check if any voice exists for this language ──
+    function langHasVoice(lang){
+        if(!allVoices.length) return true; // before voices load, show all
+        const bcp=(LANG_BCP[lang]||lang).toLowerCase();
+        const pre=lang.toLowerCase();
+        return allVoices.some(v=>{
+            const l=(v.lang||'').toLowerCase();
+            return l===bcp||l.startsWith(pre);
+        });
+    }
+
+    function speakText(text){
+        if(!text||!text.trim())return;
+        const lang=getLang();
+        window.speechSynthesis.cancel();
+        setTimeout(()=>{
+            const voice=pickVoice(activePersona,lang);
+            const u=new SpeechSynthesisUtterance(text);
+            if(voice)u.voice=voice;
+            u.lang  =voice?voice.lang:(LANG_BCP[lang]||'en-US');
+            u.rate  =Math.min(1.8,getRate()*activePersona.rate);
+            u.pitch =Math.min(2.0,getPitch()*activePersona.pitch);
+            u.volume=Math.min(1.0,getVol()*(activePersona.vol||1));
+            let kr;
+            u.onstart=()=>{kr=setInterval(()=>{if(!window.speechSynthesis.speaking)clearInterval(kr);else{window.speechSynthesis.pause();window.speechSynthesis.resume();}},8000);};
+            u.onend=u.onerror=()=>clearInterval(kr);
+            window.speechSynthesis.speak(u);
+            showFeedback(text);
+            addHistory(text);
+        },80);
+    }
+
+    function showFeedback(text){
+        const short=text.length>40?text.slice(0,40)+'…':text;
+        if(isMobile()){
+            mToast.textContent=`${activePersona.emoji} ${short}`;
+            mToast.style.display='block';mToast.classList.add('show');
+            clearTimeout(mToast._t);
+            mToast._t=setTimeout(()=>{mToast.classList.remove('show');setTimeout(()=>mToast.style.display='none',350);},Math.max(2000,text.length*55));
+        }else{
+            $('bubble-label').textContent=`${activePersona.emoji} ${activePersona.name}`;
+            $('bubble-word').textContent=short;
+            dBubble.classList.add('show');clearTimeout(dBubble._t);
+            dBubble._t=setTimeout(()=>dBubble.classList.remove('show'),Math.max(2500,text.length*60));
+        }
+    }
+
+    function setupTS(inputId,btnId){
+        const inp=$(inputId),btn=$(btnId);if(!inp||!btn)return;
+        btn.addEventListener('click',()=>{
+            if(!activated){doActivate();return;}
+            const t=inp.value.trim();if(!t)return;
+            btn.classList.add('speaking');
+            speakText(t);
+            setTimeout(()=>btn.classList.remove('speaking'),Math.max(1500,t.length*70));
+        });
+        inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();btn.click();}});
+    }
+    setupTS('d-ts-input','d-ts-btn');
+    setupTS('m-ts-input','m-ts-btn');
+    [$('d-ts-input'),$('m-ts-input')].forEach(el=>{if(el)el.addEventListener('input',()=>el._edited=true);});
+
+    // ── UPDATED buildGrids: hides groups when lang has no voices ──
+    function buildGrids(){
+        const lang=getLang();
+        const groups=getGroups(lang);
+        const hasVoice=langHasVoice(lang);
+
+        ['d-persona-container','m-persona-container'].forEach(cid=>{
+            const c=$(cid);if(!c)return;
+            c.innerHTML='';
+            const seen=new Set();
+
+            groups.forEach(group=>{
+                // For language-specific extra groups (non-BASE), hide if lang has no voices
+                const isLangExtra=!BASE_GROUPS.includes(group);
+                if(isLangExtra&&!hasVoice) return;
+
+                const lbl=document.createElement('div');
+                lbl.className='persona-section';
+                lbl.textContent=group.label;
+
+                const grid=document.createElement('div');
+                grid.className='persona-grid';
+                let count=0;
+
+                group.personas.forEach(p=>{
+                    if(seen.has(p.id))return;
+                    seen.add(p.id);
+
+                    // For BASE groups: show always (they work for any lang via fallback)
+                    // But hide persona card if voices loaded AND lang has no voices at all
+                    // (only apply strict hiding for lang-extra personas)
+                    if(isLangExtra&&!hasVoice)return;
+
+                    const isAct=p.id===activePersona.id;
+                    const card=document.createElement('div');
+                    card.className='persona-card'+(isAct?' active':'');
+                    card.onclick=()=>window.__sp(p.id);
+                    card.innerHTML=
+                        `<span class="pe">${p.emoji}</span>`+
+                        `<span class="pn">${p.name}</span>`+
+                        `<span class="pd">${p.desc}</span>`+
+                        `<span class="pb">${isAct?'✓':''}</span>`;
+                    grid.appendChild(card);
+                    count++;
+                });
+
+                if(count>0){
+                    c.appendChild(lbl);
+                    c.appendChild(grid);
+                }
+            });
+        });
+    }
+    buildGrids();
+
+    window.__sp=pid=>{
+        const lang=getLang();
+        const all=getPersonas(lang);
+        activePersona=all.find(p=>p.id===pid)||activePersona;
+        buildGrids();
+        [['rate-slider','rate-val'],['m-rate-slider','m-rate-val']].forEach(([s,v])=>{
+            const sl=$(s),vl=$(v);if(sl){sl.value=activePersona.rate;if(vl)vl.textContent=activePersona.rate.toFixed(2);}
+        });
+        [['pitch-slider','pitch-val'],['m-pitch-slider','m-pitch-val']].forEach(([s,v])=>{
+            const sl=$(s),vl=$(v);if(sl){sl.value=activePersona.pitch;if(vl)vl.textContent=activePersona.pitch.toFixed(2);}
+        });
+        [['vol-slider','vol-val'],['m-vol-slider','m-vol-val']].forEach(([s,v])=>{
+            const sl=$(s),vl=$(v);if(sl){sl.value=activePersona.vol||1;if(vl)vl.textContent=(activePersona.vol||1).toFixed(2);}
+        });
+        if(activated)speakText(getLangSample(lang));
+        updateTag();
+    };
+
+    window.speechSynthesis.onvoiceschanged=()=>{allVoices=window.speechSynthesis.getVoices();buildGrids();updateTag();};
+    let vR=0;const vT=setInterval(()=>{
+        allVoices=window.speechSynthesis.getVoices();
+        if(allVoices.length||vR++>25)clearInterval(vT);
+        updateTag();
+    },300);
+
+    function updateTag(){
+        const has=allVoices.length>0,act=activated?'✅ Active':'🟡 Not activated';
+        const txt=has?`🟢 ${allVoices.length} voices • ${activePersona.emoji} ${activePersona.name} • ${act}`:act;
+        ['d-engine-tag','m-engine-tag'].forEach(id=>{
+            const el=$(id);if(el){el.textContent=txt;el.className=`engine-tag ${has&&activated?'ok':'warn'}`;}
+        });
+        buildGrids(); // re-check visibility after voice list updates
+    }
+
+    function updateLangPills(){
+        const lang=getLang(),sample=getLangSample(lang);
+        const short=sample.length>38?sample.slice(0,38)+'…':sample;
+        [$('m-lang-pill'),$('d-lang-pill')].forEach(el=>{if(el)el.textContent=`💬 "${short}"`;});
+        [$('test-input')].forEach(el=>{if(el&&el!==document.activeElement)el.value=sample;});
+        [$('d-ts-input'),$('m-ts-input')].forEach(el=>{if(el&&!el._edited)el.value=sample;});
+    }
+
+    function onLangChange(){
+        buildGrids();updateLangPills();updateTag();
+        if(activated)speakText(getLangSample(getLang()));
+    }
+    $('m-lang-select')?.addEventListener('change',onLangChange);
+    $('lang-select')  ?.addEventListener('change',onLangChange);
+    updateLangPills();
+
+    const modal=$('contact-modal');
+    $('modal-close-btn')?.addEventListener('click',()=>modal.classList.remove('show'));
+    modal?.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show');});
+    $('d-mic-btn')?.addEventListener('click',()=>modal.classList.add('show'));
+    $('m-mic-btn')?.addEventListener('click',()=>modal.classList.add('show'));
+
+    function showMobileCaption(text){
+        if(!text||text.length<2)return;
+        savedSelText=text;
+        const short=text.length>50?text.slice(0,50)+'…':text;
+        mSelTextPreview.textContent=`"${short}"`;
+        mSelCaption.classList.add('show');
+    }
+    function hideMobileCaption(){mSelCaption.classList.remove('show');savedSelText='';}
+    $('m-sel-speak-btn')?.addEventListener('click',()=>{
+        const t=savedSelText;hideMobileCaption();window.getSelection()?.removeAllRanges();if(t)speakText(t);
+    });
+    $('m-sel-dismiss-btn')?.addEventListener('click',()=>{
+        hideMobileCaption();window.getSelection()?.removeAllRanges();
+    });
+
+    const dSelBar=$('selection-bar'),dSelPrev=$('sel-preview');let dSelTimer=null;
+    function checkDesktopSelection(){
+        clearTimeout(dSelTimer);dSelTimer=setTimeout(()=>{
+            const t=window.getSelection()?.toString().trim()||'';
+            if(t.length>1){savedSelText=t;dSelPrev.textContent=t.length>30?t.slice(0,30)+'…':t;dSelBar.classList.add('visible');}
+            else if(!t)dSelBar.classList.remove('visible');
+        },200);
+    }
+    document.addEventListener('mouseup',e=>{if(!isMobile())checkDesktopSelection();});
+    document.addEventListener('keyup',e=>{if(!isMobile()&&e.key==='a'&&e.ctrlKey)checkDesktopSelection();});
+    $('btn-speak-sel')  ?.addEventListener('click',()=>{const t=savedSelText;dSelBar.classList.remove('visible');window.getSelection()?.removeAllRanges();if(t)speakText(t);});
+    $('btn-dismiss-sel')?.addEventListener('click',()=>{dSelBar.classList.remove('visible');savedSelText='';window.getSelection()?.removeAllRanges();});
+
+    [['rate-slider','rate-val'],['pitch-slider','pitch-val'],['vol-slider','vol-val'],
+     ['m-rate-slider','m-rate-val'],['m-pitch-slider','m-pitch-val'],['m-vol-slider','m-vol-val']
+    ].forEach(([s,v])=>{const sl=$(s),vl=$(v);if(sl&&vl)sl.oninput=()=>vl.textContent=parseFloat(sl.value).toFixed(2);});
+
+    function setStatus(id,msg,bg,col){
+        const el=$(id);if(!el)return;
+        el.textContent=msg;el.style.background=bg;el.style.color=col;el.style.display='block';
+    }
+
+    function doActivate(){
+        window.speechSynthesis.cancel();
+        const w=new SpeechSynthesisUtterance(' ');w.volume=0;window.speechSynthesis.speak(w);
+        activated=true;
+        allVoices=window.speechSynthesis.getVoices();
+        setTimeout(()=>{
+            allVoices=window.speechSynthesis.getVoices();
+            buildGrids();updateTag();
+            speakText(getLangSample(getLang()));
+        },150);
+        setStatus('status','✅ Activated! Upload your PDF.','#0d2b1a','#00e676');
+        setStatus('m-status','✅ Voice ready! Go to Reader tab.','#0d2b1a','#00e676');
+        const banner=$('m-activate-banner');
+        if(banner){
+            banner.style.background='linear-gradient(135deg,rgba(0,200,83,.12),rgba(0,230,118,.05))';
+            banner.style.borderColor='rgba(0,200,83,.3)';
+            banner.querySelector('p').textContent='✅ Voice active! Pick persona/language, then go to Reader tab.';
+            const btn=banner.querySelector('button');
+            if(btn){btn.textContent='✅ Activated';btn.style.background='linear-gradient(135deg,#00c853,#00e676)';btn.style.color='#0a1a0a';}
+        }
+        updateTag();updateLangPills();
+    }
+    $('btn-activate')   ?.addEventListener('click',doActivate);
+    $('m-btn-activate') ?.addEventListener('click',doActivate);
+    $('m-btn-activate2')?.addEventListener('click',doActivate);
+
+    document.querySelectorAll('.nav-tab').forEach(tab=>{
+        tab.onclick=()=>{
+            document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.mobile-page').forEach(p=>p.classList.remove('active'));
+            $(tab.dataset.tab)?.classList.add('active');
+        };
+    });
+
+    const ZOOM_MIN=0.4,ZOOM_MAX=3.5,ZOOM_STEP=0.25;
+    function applyZoom(z){
+        mZoom=Math.max(ZOOM_MIN,Math.min(ZOOM_MAX,z));
+        const inner=$('m-pdf-inner'),outer=$('m-pdf-outer');if(!inner||!outer)return;
+        inner.style.transform=`scale(${mZoom})`;
+        inner.style.width=(outer.clientWidth/mZoom)+'px';
+        const lbl=$('m-zoom-label');if(lbl)lbl.textContent=Math.round(mZoom*100)+'%';
+    }
+    $('m-zoom-in')   ?.addEventListener('click',()=>applyZoom(mZoom+ZOOM_STEP));
+    $('m-zoom-out')  ?.addEventListener('click',()=>applyZoom(mZoom-ZOOM_STEP));
+    $('m-zoom-reset')?.addEventListener('click',()=>applyZoom(1.0));
+    const pdfOuter=$('m-pdf-outer');
+    if(pdfOuter){
+        pdfOuter.addEventListener('touchstart',e=>{if(e.touches.length===2){isPinching=true;pinchStartDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);pinchStartZoom=mZoom;}},{passive:true});
+        pdfOuter.addEventListener('touchmove',e=>{if(e.touches.length===2&&isPinching){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);applyZoom(pinchStartZoom*(d/pinchStartDist));}},{passive:false});
+        pdfOuter.addEventListener('touchend',e=>{if(e.touches.length<2)isPinching=false;},{passive:true});
+    }
+
+    const setupUp=(aId,iId)=>{
+        const a=$(aId),i=$(iId);if(!a||!i)return;
+        a.addEventListener('click',e=>{if(e.target.tagName!=='LABEL')i.click();});
+        a.ondragover=e=>{e.preventDefault();a.classList.add('drag');};
+        a.ondragleave=()=>a.classList.remove('drag');
+        a.ondrop=e=>{e.preventDefault();a.classList.remove('drag');if(e.dataTransfer.files[0]?.type==='application/pdf')loadPDF(e.dataTransfer.files[0]);};
+        i.onchange=e=>{if(e.target.files[0])loadPDF(e.target.files[0]);};
+    };
+    setupUp('upload-area','file-input');
+    setupUp('m-upload-area','m-file-input');
+
+    async function loadPDF(file){
+        if(!activated)return alert('Go to 🎛️ Voice tab first and tap "Activate Voice Engine"!');
+        setStatus('status','⏳ Loading PDF...','#1a1500','#ffd740');
+        setStatus('m-status','⏳ Loading...','#1a1500','#ffd740');
+        const buf=await file.arrayBuffer();
+        pdfDoc=await pdfjsLib.getDocument({data:buf}).promise;
+        totalPages=pdfDoc.numPages;currentPage=1;mZoom=1.0;applyZoom(1.0);
+        ['upload-area','m-upload-area'].forEach(id=>{
+            const el=$(id);if(!el)return;
+            el.innerHTML=`<div style="padding:9px;text-align:center;"><span style="color:var(--success);font-weight:700;">✅ ${file.name}</span><br><span style="color:var(--muted);font-size:.76em;">${totalPages} pages</span><br><label style="color:var(--primary);font-size:.78em;cursor:pointer;margin-top:4px;display:inline-block;">🔄 Change<input type="file" accept=".pdf" style="display:none;" onchange="window.__cf(this)"></label></div>`;
+        });
+        window.__cf=inp=>{if(inp.files[0])loadPDF(inp.files[0]);};
+        $('toolbar').style.display='block';
+        $('m-toolbar').classList.add('visible');
+        const hint=$('m-sel-hint');if(hint)hint.style.display='block';
+        setStatus('status',`📄 ${totalPages} pages — Click any word, drag for sentence`,'#0d2b1a','#00e676');
+        setStatus('m-status',`📄 ${totalPages} pages — Tap word, long-press drag = sentence`,'#0d2b1a','#00e676');
+        await renderPage(currentPage);updateNav();
+    }
+
+    const goPage=n=>{if(!pdfDoc||n<1||n>totalPages)return;currentPage=n;renderPage(n);updateNav();};
+    $('btn-prev')  ?.addEventListener('click',()=>goPage(currentPage-1));
+    $('btn-next')  ?.addEventListener('click',()=>goPage(currentPage+1));
+    $('m-btn-prev')?.addEventListener('click',()=>goPage(currentPage-1));
+    $('m-btn-next')?.addEventListener('click',()=>goPage(currentPage+1));
+    function updateNav(){
+        ['page-info','m-page-info'].forEach(id=>{const el=$(id);if(el)el.textContent=`${currentPage}/${totalPages}`;});
+        ['btn-prev','m-btn-prev'].forEach(id=>{const el=$(id);if(el)el.disabled=currentPage===1;});
+        ['btn-next','m-btn-next'].forEach(id=>{const el=$(id);if(el)el.disabled=currentPage===totalPages;});
+    }
+
+    let swX=0,swY=0;
+    if(pdfOuter){
+        pdfOuter.addEventListener('touchstart',e=>{if(e.touches.length===1){swX=e.touches[0].clientX;swY=e.touches[0].clientY;}},{passive:true});
+        pdfOuter.addEventListener('touchend',e=>{
+            if(isPinching||e.changedTouches.length!==1)return;
+            const sel=window.getSelection()?.toString().trim()||'';
+            if(sel.length>1){showMobileCaption(sel);return;}
+            const dx=e.changedTouches[0].clientX-swX,dy=Math.abs(e.changedTouches[0].clientY-swY);
+            if(Math.abs(dx)>72&&dy<50){dx<0?goPage(currentPage+1):goPage(currentPage-1);}
+        },{passive:true});
+    }
+
+    async function renderPage(num){
+        const targets=[{cid:'pdf-container',isMob:false},{cid:'m-pdf-inner',isMob:true}];
+        for(const {cid,isMob} of targets){
+            const c=$(cid);if(!c)continue;c.innerHTML='';
+            const page=await pdfDoc.getPage(num);
+            const outerW=isMob?($('m-pdf-outer')?.clientWidth||360):($('pdf-container')?.clientWidth||800);
+            const baseW=isMob?(outerW-14):(outerW-20);
+            const unscaled=page.getViewport({scale:1});
+            const scale=Math.max(1.0,Math.min(2.5,baseW/unscaled.width));
+            const vp=page.getViewport({scale});
+            if(isMob){c.style.width=vp.width+'px';c.style.minWidth=vp.width+'px';}
+            const wrap=document.createElement('div');
+            wrap.className='page-wrapper';wrap.style.width=vp.width+'px';wrap.style.height=vp.height+'px';
+            const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;
+            await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
+            const tl=document.createElement('div');tl.className='textLayer';
+            wrap.appendChild(canvas);wrap.appendChild(tl);c.appendChild(wrap);
+            const tc=await page.getTextContent();
+            tc.items.forEach(item=>{
+                if(!item.str.trim())return;
+                const tx=pdfjsLib.Util.transform(vp.transform,item.transform);
+                const span=document.createElement('span');
+                span.textContent=item.str;
+                span.style.left=tx[4]+'px';
+                span.style.top=(tx[5]-item.height*scale)+'px';
+                span.style.fontSize=Math.abs(tx[0])+'px';
+                span.style.fontFamily=item.fontName||'sans-serif';
+                span.addEventListener('mousedown',()=>window.getSelection()?.removeAllRanges());
+                span.addEventListener('click',e=>{
+                    e.stopPropagation();
+                    const sel=window.getSelection()?.toString().trim()||'';
+                    if(sel.length>1){savedSelText=sel;dSelPrev.textContent=sel.length>30?sel.slice(0,30)+'…':sel;dSelBar.classList.add('visible');return;}
+                    const w=getWordAt(e,span);if(w){hlSpan(span);speakText(w);}
+                });
+                let tStart=0,tMoved=false,lpTimer=null;
+                span.addEventListener('touchstart',e=>{tStart=Date.now();tMoved=false;span.classList.add('hl');lpTimer=setTimeout(()=>span.classList.remove('hl'),400);},{passive:true});
+                span.addEventListener('touchmove',()=>{tMoved=true;clearTimeout(lpTimer);span.classList.remove('hl');},{passive:true});
+                span.addEventListener('touchend',e=>{
+                    clearTimeout(lpTimer);span.classList.remove('hl');if(isPinching)return;
+                    const sel=window.getSelection()?.toString().trim()||'';
+                    if(sel.length>1){e.preventDefault();showMobileCaption(sel);return;}
+                    if(!tMoved&&Date.now()-tStart<500){
+                        e.preventDefault();
+                        const t=e.changedTouches[0];
+                        const w=getWordAt({clientX:t.clientX,clientY:t.clientY},span);
+                        if(w){hlSpan(span);speakText(w);}
+                    }
+                });
+                tl.appendChild(span);
+            });
+            if(isMob){
+                tl.addEventListener('touchend',()=>{setTimeout(()=>{const s=window.getSelection()?.toString().trim()||'';if(s.length>1)showMobileCaption(s);},120);},{passive:true});
+            }else{
+                tl.addEventListener('mouseup',()=>checkDesktopSelection());
+            }
+        }
+        hideMobileCaption();applyZoom(mZoom);
+    }
+
+    function getWordAt(e,span){
+        if(document.caretRangeFromPoint){
+            const r=document.caretRangeFromPoint(e.clientX,e.clientY);
+            if(r?.startContainer?.nodeType===Node.TEXT_NODE){
+                const txt=r.startContainer.textContent,off=r.startOffset;
+                let s=off,end=off;
+                while(s>0&&!/\s/.test(txt[s-1]))s--;
+                while(end<txt.length&&!/\s/.test(txt[end]))end++;
+                const w=txt.slice(s,end).replace(/[^a-zA-Z0-9\u00C0-\u024F\u0400-\u04FF\u4E00-\u9FFF\u3040-\u30FF\u0900-\u097F\uAC00-\uD7AF]/g,'').trim();
+                if(w.length>0)return w;
+            }
+        }
+        return span.textContent.trim().split(/\s+/)[0]||span.textContent.trim();
+    }
+
+    function hlSpan(span){
+        document.querySelectorAll('.textLayer span.clicked').forEach(s=>s.classList.remove('clicked'));
+        span.classList.add('clicked');
+        setTimeout(()=>span.classList.remove('clicked'),600);
+    }
+
+    function addHistory(text){
+        const short=text.length>30?text.slice(0,30)+'…':text;
+        if(historyWords.includes(short))return;
+        historyWords.unshift(short);
+        if(historyWords.length>40)historyWords.pop();
+        const hl=$('history-list');if(!hl)return;
+        hl.innerHTML='';
+        historyWords.forEach(w=>{
+            const chip=document.createElement('div');
+            chip.className='history-chip';
+            chip.innerHTML=`<span style="color:var(--accent);flex-shrink:0;">🔊</span><span>${w}</span>`;
+            chip.onclick=()=>speakText(w);
+            hl.appendChild(chip);
+        });
+    }
+}
+</script>
+</body>
+</html>
