@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PDF Pronunciation Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --primary: #6c63ff; --accent: #00e5ff; --dark: #0f0f1a;
+            --card: #1a1a2e; --card2: #16213e; --text: #e0e0ff;
+            --muted: #8888aa; --success: #00e676; --radius: 16px;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 20% 20%, rgba(108,99,255,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(0,229,255,0.1) 0%, transparent 50%); pointer-events: none; z-index: 0; }
+
+        /* ── DESKTOP LAYOUT ── */
+        .app-layout { position: relative; z-index: 1; display: flex; gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; min-height: 100vh; }
+        .left-panel  { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+        .main-panel  { flex: 1; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+        .right-panel { width: 210px; flex-shrink: 0; }
+
+        /* ── MOBILE HEADER ── */
+        .mobile-header { display: none; background: var(--card); border-bottom: 1px solid rgba(108,99,255,0.2); padding: 12px 16px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .mobile-header h1 { font-size: 1.05em; font-weight: 800; background: linear-gradient(135deg, #6c63ff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid rgba(108,99,255,0.25); z-index: 200; padding: 6px 0 env(safe-area-inset-bottom, 6px); }
+        .bottom-nav-tabs { display: flex; }
+        .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 4px; cursor: pointer; color: var(--muted); font-size: 0.68em; font-weight: 600; border: none; background: none; font-family: 'Inter', sans-serif; transition: color 0.2s; }
+        .nav-tab .tab-icon { font-size: 1.4em; }
+        .nav-tab.active { color: var(--primary); }
+
+        /* ── MOBILE PAGES ── */
+        .mobile-page { display: none; padding: 14px; padding-bottom: 75px; }
+        .mobile-page.active { display: block; }
+
+        /* ── CARDS ── */
+        .card { background: var(--card); border: 1px solid rgba(108,99,255,0.2); border-radius: var(--radius); padding: 18px; }
+        .card-title { font-size: 0.72em; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); margin-bottom: 14px; }
+
+        /* ── APP HEADER ── */
+        .app-header { text-align: center; padding: 10px 0 4px; }
+        .app-header .logo { font-size: 2em; animation: float 3s ease-in-out infinite; display: inline-block; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        .app-header h1 { font-size: 1.5em; font-weight: 800; background: linear-gradient(135deg, #6c63ff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .app-header p { color: var(--muted); font-size: 0.8em; margin-top: 4px; }
+
+        /* ── CONTROLS ── */
+        .control-group { margin-bottom: 12px; }
+        .control-group:last-child { margin-bottom: 0; }
+        .control-group label { display: block; font-size: 0.73em; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .control-group select { width: 100%; background: var(--card2); border: 1px solid rgba(108,99,255,0.3); border-radius: 10px; color: var(--text); padding: 10px 12px; font-size: 0.88em; font-family: 'Inter', sans-serif; cursor: pointer; outline: none; min-height: 44px; }
+        .control-group select:focus { border-color: var(--primary); }
+
+        .gender-tabs { display: flex; gap: 6px; }
+        .gender-tab { flex: 1; padding: 10px 4px; border-radius: 10px; border: 1.5px solid rgba(108,99,255,0.3); background: transparent; color: var(--muted); cursor: pointer; font-size: 0.82em; font-family: 'Inter', sans-serif; transition: all 0.2s; text-align: center; min-height: 44px; }
+        .gender-tab.active { background: rgba(108,99,255,0.2); border-color: var(--primary); color: var(--text); }
+
+        .slider-row { display: flex; align-items: center; gap: 8px; }
+        .slider-row input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; background: rgba(108,99,255,0.3); border-radius: 2px; outline: none; }
+        .slider-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--primary); border-radius: 50%; cursor: pointer; }
+        .slider-val { font-size: 0.8em; color: var(--primary); font-weight: 600; width: 32px; text-align: right; }
+
+        .test-row { display: flex; gap: 8px; margin-top: 12px; }
+        .test-row input { flex: 1; background: var(--card2); border: 1px solid rgba(108,99,255,0.3); border-radius: 10px; color: var(--text); padding: 10px 12px; font-size: 0.88em; font-family: 'Inter', sans-serif; outline: none; min-width: 0; min-height: 44px; }
+
+        /* ── BUTTONS ── */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 25px; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.88em; font-weight: 600; transition: all 0.2s; white-space: nowrap; min-height: 44px; }
+        .btn-primary { background: linear-gradient(135deg, #6c63ff, #5a52d5); color: white; box-shadow: 0 3px 15px rgba(108,99,255,0.4); }
+        .btn-primary:hover { transform: translateY(-1px); }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-secondary { background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.4); color: var(--text); }
+        .btn-secondary:active { background: rgba(108,99,255,0.25); }
+        .btn-success { background: linear-gradient(135deg, #00c853, #00e676); color: #0a1a0a; box-shadow: 0 3px 15px rgba(0,200,83,0.4); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+        /* ── UPLOAD ── */
+        .upload-area { border: 2px dashed rgba(108,99,255,0.4); border-radius: var(--radius); padding: 28px 16px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(108,99,255,0.03); }
+        .upload-area:hover, .upload-area.drag { border-color: var(--primary); background: rgba(108,99,255,0.08); }
+        .upload-area input { display: none; }
+        .upload-area label { font-size: 1em; color: var(--primary); cursor: pointer; display: block; margin-bottom: 4px; font-weight: 600; }
+        .upload-area .upload-emoji { font-size: 2.5em; display: block; margin-bottom: 10px; }
+
+        /* ── TOOLBAR ── */
+        #toolbar, .m-toolbar-wrap { display: none; }
+        .m-toolbar-wrap.visible { display: block; }
+        .toolbar-inner, .m-toolbar-inner { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: space-between; }
+        .page-badge { background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3); padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 0.85em; color: var(--primary); }
+        .swipe-hint { text-align: center; font-size: 0.72em; color: var(--muted); padding: 6px 0; }
+
+        /* ── STATUS ── */
+        .status-bar { display: none; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 0.85em; text-align: center; }
+
+        /* ── PDF CONTAINER ── */
+        .pdf-wrap { width: 100%; min-height: 72vh; overflow-y: auto; overflow-x: auto; background: #111122; border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; align-items: center; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; touch-action: pan-y; }
+        .pdf-wrap.mobile { min-height: calc(100vh - 210px); border-radius: 12px; }
+        .pdf-wrap::-webkit-scrollbar { width: 4px; }
+        .pdf-wrap::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+        .page-wrapper { position: relative; margin-bottom: 16px; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0; }
+        canvas { display: block; }
+        .textLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; cursor: pointer; touch-action: none; }
+        .textLayer span { color: transparent; position: absolute; white-space: pre; cursor: pointer; transform-origin: 0% 0%; line-height: 1; border-radius: 3px; transition: background 0.15s; padding: 3px 2px; margin: -3px -2px; }
+        .textLayer span:hover  { background: rgba(108,99,255,0.3) !important; }
+        .textLayer span.active { background: rgba(108,99,255,0.25) !important; }
+        .textLayer span.clicked { background: rgba(0,229,255,0.4) !important; animation: wordPop 0.3s ease; }
+        @keyframes wordPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+        .textLayer ::selection { background: rgba(108,99,255,0.5) !important; color: transparent; }
+
+        /* ── HISTORY ── */
+        .history-panel { position: sticky; top: 16px; }
+        .history-list { display: flex; flex-direction: column; gap: 6px; max-height: calc(100vh - 180px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
+        .m-history-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .history-chip { background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.2); border-radius: 10px; padding: 10px 14px; font-size: 0.84em; cursor: pointer; transition: all 0.2s; color: var(--text); display: flex; align-items: center; gap: 6px; word-break: break-word; min-height: 44px; }
+        .history-chip:hover, .history-chip:active { background: rgba(108,99,255,0.3); }
+        .no-history { color: var(--muted); font-size: 0.82em; text-align: center; padding: 30px 0; width: 100%; }
+
+        /* ── TTS ENGINE BADGE ── */
+        .engine-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.72em; font-weight: 700; margin-top: 8px; }
+        .engine-badge.browser { background: rgba(0,200,83,0.15); color: var(--success); border: 1px solid rgba(0,200,83,0.3); }
+        .engine-badge.google  { background: rgba(66,133,244,0.15); color: #4285f4; border: 1px solid rgba(66,133,244,0.3); }
+
+        /* ── SELECTION BAR ── */
+        #selection-bar { display: none; position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: var(--card); border: 1px solid rgba(108,99,255,0.4); border-radius: 40px; padding: 10px 18px; gap: 10px; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 9000; max-width: 92vw; animation: barIn 0.25s ease; }
+        #selection-bar.visible { display: flex; }
+        @keyframes barIn { from{transform:translateX(-50%) translateY(20px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+        #sel-text { color: var(--text); font-size: 0.88em; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #sel-preview { color: var(--primary); font-weight: 700; }
+
+        /* ── SPEAK BUBBLE ── */
+        #speak-bubble { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(120px); background: linear-gradient(135deg, #6c63ff, #00e5ff); color: white; padding: 14px 24px; border-radius: 40px; font-size: 1em; font-weight: 700; box-shadow: 0 10px 40px rgba(108,99,255,0.6); z-index: 9999; transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); text-align: center; max-width: 85vw; }
+        #speak-bubble.show { transform: translateX(-50%) translateY(0); }
+        .bubble-label { font-size: 0.7em; opacity: 0.85; margin-bottom: 2px; }
+        .bubble-word  { font-size: 1.1em; word-break: break-word; }
+        .wave-bars { display: flex; gap: 3px; align-items: center; height: 16px; justify-content: center; margin-top: 5px; }
+        .wave-bar { width: 3px; background: white; border-radius: 2px; animation: wave 0.7s ease-in-out infinite; }
+        .wave-bar:nth-child(1){animation-delay:.0s;height:5px} .wave-bar:nth-child(2){animation-delay:.1s;height:12px}
+        .wave-bar:nth-child(3){animation-delay:.2s;height:8px} .wave-bar:nth-child(4){animation-delay:.3s;height:15px}
+        .wave-bar:nth-child(5){animation-delay:.4s;height:6px}
+        @keyframes wave { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.8)} }
+
+        #voice-info { margin-top: 8px; font-size: 0.78em; color: var(--muted); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .app-layout    { display: none; }
+            .mobile-header { display: flex; }
+            .bottom-nav    { display: block; }
+            #speak-bubble  { bottom: 70px; }
+            #selection-bar { bottom: 70px; }
+        }
+        @media (min-width: 769px) {
+            .mobile-header, .bottom-nav, .mobile-page { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════ MOBILE HEADER ══════════════ -->
+<div class="mobile-header">
+    <span style="font-size:1.4em;">🎤</span>
+    <h1>PDF Pronunciation Pro</h1>
+    <button class="btn btn-primary" id="m-btn-activate" style="padding:8px 12px;font-size:0.78em;">🔊 Activate</button>
+</div>
+
+<!-- ══════════════ MOBILE PAGES ══════════════ -->
+
+<!-- Page 1: Reader -->
+<div class="mobile-page active" id="m-page-reader">
+    <div class="upload-area" id="m-upload-area" style="margin-bottom:14px;">
+        <input type="file" id="m-file-input" accept=".pdf">
+        <span class="upload-emoji">📂</span>
+        <label for="m-file-input">Tap to Upload PDF</label>
+        <p style="color:var(--muted);font-size:0.8em;">All multi-page PDFs supported</p>
+    </div>
+    <div class="m-toolbar-wrap" id="m-toolbar">
+        <div class="card" style="margin-bottom:10px;">
+            <div class="m-toolbar-inner">
+                <button class="btn btn-secondary" id="m-btn-prev">⬅</button>
+                <div class="page-badge" id="m-page-info">Page 1/1</div>
+                <button class="btn btn-secondary" id="m-btn-next">➡</button>
+            </div>
+            <div class="swipe-hint">👆 Tap word • Long-press to select sentence • Swipe to change page</div>
+        </div>
+    </div>
+    <div class="status-bar" id="m-status"></div>
+    <div class="pdf-wrap mobile" id="m-pdf-container">
+        <div style="color:var(--muted);text-align:center;padding:60px 20px;font-size:0.9em;">📄 Upload PDF to start</div>
+    </div>
+</div>
+
+<!-- Page 2: Voice Settings -->
+<div class="mobile-page" id="m-page-settings">
+
+    <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">🧑 Speaker Gender</div>
+        <div class="gender-tabs">
+            <button class="gender-tab active" data-gender="all">All</button>
+            <button class="gender-tab" data-gender="female">♀ Female</button>
+            <button class="gender-tab" data-gender="male">♂ Male</button>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">🌐 Language</div>
+        <div class="control-group">
+            <label>Select Language</label>
+            <select id="m-lang-select">
+                <option value="auto">🌍 Auto (Browser Default)</option>
+                <option value="af">🇿🇦 Afrikaans</option>
+                <option value="ar">🇸🇦 Arabic</option>
+                <option value="bg">🇧🇬 Bulgarian</option>
+                <option value="bn">🇧🇩 Bengali</option>
+                <option value="bs">🇧🇦 Bosnian</option>
+                <option value="ca">🇪🇸 Catalan</option>
+                <option value="cs">🇨🇿 Czech</option>
+                <option value="cy">🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh</option>
+                <option value="da">🇩🇰 Danish</option>
+                <option value="de">🇩🇪 German</option>
+                <option value="el">🇬🇷 Greek</option>
+                <option value="en" selected>🇬🇧 English</option>
+                <option value="es">🇪🇸 Spanish</option>
+                <option value="et">🇪🇪 Estonian</option>
+                <option value="fi">🇫🇮 Finnish</option>
+                <option value="fr">🇫🇷 French</option>
+                <option value="gu">🇮🇳 Gujarati</option>
+                <option value="he">🇮🇱 Hebrew</option>
+                <option value="hi">🇮🇳 Hindi</option>
+                <option value="hr">🇭🇷 Croatian</option>
+                <option value="hu">🇭🇺 Hungarian</option>
+                <option value="id">🇮🇩 Indonesian</option>
+                <option value="is">🇮🇸 Icelandic</option>
+                <option value="it">🇮🇹 Italian</option>
+                <option value="ja">🇯🇵 Japanese</option>
+                <option value="ka">🇬🇪 Georgian</option>
+                <option value="kn">🇮🇳 Kannada</option>
+                <option value="ko">🇰🇷 Korean</option>
+                <option value="lt">🇱🇹 Lithuanian</option>
+                <option value="lv">🇱🇻 Latvian</option>
+                <option value="mk">🇲🇰 Macedonian</option>
+                <option value="ml">🇮🇳 Malayalam</option>
+                <option value="mr">🇮🇳 Marathi</option>
+                <option value="ms">🇲🇾 Malay</option>
+                <option value="my">🇲🇲 Myanmar (Burmese)</option>
+                <option value="nb">🇳🇴 Norwegian</option>
+                <option value="nl">🇳🇱 Dutch</option>
+                <option value="pa">🇮🇳 Punjabi</option>
+                <option value="pl">🇵🇱 Polish</option>
+                <option value="pt">🇧🇷 Portuguese</option>
+                <option value="ro">🇷🇴 Romanian</option>
+                <option value="ru">🇷🇺 Russian</option>
+                <option value="si">🇱🇰 Sinhala</option>
+                <option value="sk">🇸🇰 Slovak</option>
+                <option value="sl">🇸🇮 Slovenian</option>
+                <option value="sq">🇦🇱 Albanian</option>
+                <option value="sr">🇷🇸 Serbian</option>
+                <option value="su">🇮🇩 Sundanese</option>
+                <option value="sv">🇸🇪 Swedish</option>
+                <option value="sw">🇰🇪 Swahili</option>
+                <option value="ta">🇮🇳 Tamil</option>
+                <option value="te">🇮🇳 Telugu</option>
+                <option value="th">🇹🇭 Thai</option>
+                <option value="tl">🇵🇭 Filipino</option>
+                <option value="tr">🇹🇷 Turkish</option>
+                <option value="uk">🇺🇦 Ukrainian</option>
+                <option value="ur">🇵🇰 Urdu</option>
+                <option value="vi">🇻🇳 Vietnamese</option>
+                <option value="zh">🇨🇳 Chinese (Mandarin)</option>
+                <option value="zu">🇿🇦 Zulu</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>🎙️ Browser Voice <span style="opacity:0.6;">(if available)</span></label>
+            <select id="m-voice-select"><option>Loading voices...</option></select>
+        </div>
+        <div id="m-voice-info" class="engine-badge browser">🟢 Browser TTS</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">🎛️ Tuning</div>
+        <div class="control-group">
+            <label>🚀 Speed</label>
+            <div class="slider-row">
+                <input type="range" id="m-rate-slider" min="0.4" max="1.8" step="0.1" value="0.85">
+                <span class="slider-val" id="m-rate-val">0.9</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label>🎵 Pitch</label>
+            <div class="slider-row">
+                <input type="range" id="m-pitch-slider" min="0.5" max="2" step="0.1" value="1">
+                <span class="slider-val" id="m-pitch-val">1.0</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label>🔊 Volume</label>
+            <div class="slider-row">
+                <input type="range" id="m-vol-slider" min="0" max="1" step="0.1" value="1">
+                <span class="slider-val" id="m-vol-val">1.0</span>
+            </div>
+        </div>
+        <div class="test-row">
+            <input type="text" id="m-test-input" value="Hello! Testing voice." placeholder="Test voice...">
+            <button class="btn btn-primary" id="m-btn-test">🔊 Test</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Page 3: History -->
+<div class="mobile-page" id="m-page-history">
+    <div class="card">
+        <div class="card-title">🕘 Pronunciation History</div>
+        <div class="m-history-list" id="m-history-list">
+            <div class="no-history">No words yet. Go to Reader and tap a word!</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ BOTTOM NAV ══════════════ -->
+<div class="bottom-nav">
+    <div class="bottom-nav-tabs">
+        <button class="nav-tab active" data-tab="m-page-reader"><span class="tab-icon">📄</span>Reader</button>
+        <button class="nav-tab" data-tab="m-page-settings"><span class="tab-icon">🎛️</span>Voice</button>
+        <button class="nav-tab" data-tab="m-page-history"><span class="tab-icon">🕘</span>History</button>
+    </div>
+</div>
+
+<!-- ══════════════ DESKTOP LAYOUT ══════════════ -->
+<div class="app-layout">
+
+    <!-- LEFT -->
+    <div class="left-panel">
+        <div class="app-header">
+            <span class="logo">🎤</span>
+            <h1>PDF Pronunciation Pro</h1>
+            <p>Click word • Drag for sentence</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">⚡ Voice Settings</div>
+            <div class="control-group">
+                <label>🧑 Gender</label>
+                <div class="gender-tabs">
+                    <button class="gender-tab active" data-gender="all">All</button>
+                    <button class="gender-tab" data-gender="female">♀ Female</button>
+                    <button class="gender-tab" data-gender="male">♂ Male</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <label>🌐 Language</label>
+                <select id="lang-select">
+                    <option value="auto">🌍 Auto (Browser Default)</option>
+                    <option value="af">🇿🇦 Afrikaans</option>
+                    <option value="ar">🇸🇦 Arabic</option>
+                    <option value="bg">🇧🇬 Bulgarian</option>
+                    <option value="bn">🇧🇩 Bengali</option>
+                    <option value="bs">🇧🇦 Bosnian</option>
+                    <option value="ca">🇪🇸 Catalan</option>
+                    <option value="cs">🇨🇿 Czech</option>
+                    <option value="cy">🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh</option>
+                    <option value="da">🇩🇰 Danish</option>
+                    <option value="de">🇩🇪 German</option>
+                    <option value="el">🇬🇷 Greek</option>
+                    <option value="en" selected>🇬🇧 English</option>
+                    <option value="es">🇪🇸 Spanish</option>
+                    <option value="et">🇪🇪 Estonian</option>
+                    <option value="fi">🇫🇮 Finnish</option>
+                    <option value="fr">🇫🇷 French</option>
+                    <option value="gu">🇮🇳 Gujarati</option>
+                    <option value="he">🇮🇱 Hebrew</option>
+                    <option value="hi">🇮🇳 Hindi</option>
+                    <option value="hr">🇭🇷 Croatian</option>
+                    <option value="hu">🇭🇺 Hungarian</option>
+                    <option value="id">🇮🇩 Indonesian</option>
+                    <option value="is">🇮🇸 Icelandic</option>
+                    <option value="it">🇮🇹 Italian</option>
+                    <option value="ja">🇯🇵 Japanese</option>
+                    <option value="ka">🇬🇪 Georgian</option>
+                    <option value="kn">🇮🇳 Kannada</option>
+                    <option value="ko">🇰🇷 Korean</option>
+                    <option value="lt">🇱🇹 Lithuanian</option>
+                    <option value="lv">🇱🇻 Latvian</option>
+                    <option value="mk">🇲🇰 Macedonian</option>
+                    <option value="ml">🇮🇳 Malayalam</option>
+                    <option value="mr">🇮🇳 Marathi</option>
+                    <option value="ms">🇲🇾 Malay</option>
+                    <option value="my">🇲🇲 Myanmar (Burmese)</option>
+                    <option value="nb">🇳🇴 Norwegian</option>
+                    <option value="nl">🇳🇱 Dutch</option>
+                    <option value="pa">🇮🇳 Punjabi</option>
+                    <option value="pl">🇵🇱 Polish</option>
+                    <option value="pt">🇧🇷 Portuguese</option>
+                    <option value="ro">🇷🇴 Romanian</option>
+                    <option value="ru">🇷🇺 Russian</option>
+                    <option value="si">🇱🇰 Sinhala</option>
+                    <option value="sk">🇸🇰 Slovak</option>
+                    <option value="sl">🇸🇮 Slovenian</option>
+                    <option value="sq">🇦🇱 Albanian</option>
+                    <option value="sr">🇷🇸 Serbian</option>
+                    <option value="su">🇮🇩 Sundanese</option>
+                    <option value="sv">🇸🇪 Swedish</option>
+                    <option value="sw">🇰🇪 Swahili</option>
+                    <option value="ta">🇮🇳 Tamil</option>
+                    <option value="te">🇮🇳 Telugu</option>
+                    <option value="th">🇹🇭 Thai</option>
+                    <option value="tl">🇵🇭 Filipino</option>
+                    <option value="tr">🇹🇷 Turkish</option>
+                    <option value="uk">🇺🇦 Ukrainian</option>
+                    <option value="ur">🇵🇰 Urdu</option>
+                    <option value="vi">🇻🇳 Vietnamese</option>
+                    <option value="zh">🇨🇳 Chinese (Mandarin)</option>
+                    <option value="zu">🇿🇦 Zulu</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>🎙️ Browser Voice <span style="opacity:0.6;">(if available)</span></label>
+                <select id="voice-select"><option>Loading voices...</option></select>
+            </div>
+            <div id="voice-info" class="engine-badge browser">🟢 Browser TTS ready</div>
+
+            <div class="control-group" style="margin-top:14px;">
+                <label>🚀 Speed</label>
+                <div class="slider-row">
+                    <input type="range" id="rate-slider" min="0.4" max="1.8" step="0.1" value="0.85">
+                    <span class="slider-val" id="rate-val">0.9</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label>🎵 Pitch</label>
+                <div class="slider-row">
+                    <input type="range" id="pitch-slider" min="0.5" max="2" step="0.1" value="1">
+                    <span class="slider-val" id="pitch-val">1.0</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label>🔊 Volume</label>
+                <div class="slider-row">
+                    <input type="range" id="vol-slider" min="0" max="1" step="0.1" value="1">
+                    <span class="slider-val" id="vol-val">1.0</span>
+                </div>
+            </div>
+            <div class="test-row">
+                <input type="text" id="test-input" value="Hello! Test." placeholder="Test voice...">
+                <button class="btn btn-primary" id="btn-activate">🔊 Activate</button>
+            </div>
+        </div>
+
+        <div class="upload-area" id="upload-area">
+            <input type="file" id="file-input" accept=".pdf">
+            <span class="upload-emoji">📂</span>
+            <label for="file-input">Step 2 — Upload PDF</label>
+            <p style="color:var(--muted);font-size:0.78em;">Click or drag your PDF here</p>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-panel">
+        <div class="card" id="toolbar">
+            <div class="toolbar-inner">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <button class="btn btn-secondary" id="btn-prev">⬅ Prev</button>
+                    <div class="page-badge" id="page-info">Page 1/1</div>
+                    <button class="btn btn-secondary" id="btn-next">Next ➡</button>
+                </div>
+                <span style="color:var(--muted);font-size:0.8em;">💡 Click = word | Drag = sentence</span>
+            </div>
+        </div>
+        <div class="status-bar" id="status"></div>
+        <div class="pdf-wrap" id="pdf-container">
+            <div style="color:var(--muted);text-align:center;padding:60px 20px;font-size:0.9em;">📄 Upload a PDF to start</div>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+        <div class="card history-panel">
+            <div class="card-title">🕘 History</div>
+            <div class="history-list" id="history-list">
+                <div class="no-history">No words yet.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Selection Bar -->
+<div id="selection-bar">
+    <div id="sel-text">🖊️ "<span id="sel-preview"></span>"</div>
+    <button class="btn btn-success" id="btn-speak-sel">▶ Speak</button>
+    <button class="btn btn-secondary" id="btn-dismiss-sel" style="padding:10px 12px;">✕</button>
+</div>
+
+<!-- Speak Bubble -->
+<div id="speak-bubble">
+    <div class="bubble-label" id="bubble-label">🔊 Speaking</div>
+    <div class="bubble-word" id="bubble-word">—</div>
+    <div class="wave-bars">
+        <div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+    </div>
+</div>
+
+<script>
+// ── LANGUAGES MAP with Google TTS language codes ──────────────────
+const LANG_MAP = {
+    'auto':'en','af':'af','ar':'ar','bg':'bg','bn':'bn','bs':'bs',
+    'ca':'ca','cs':'cs','cy':'cy','da':'da','de':'de','el':'el',
+    'en':'en','es':'es','et':'et','fi':'fi','fr':'fr','gu':'gu',
+    'he':'iw','hi':'hi','hr':'hr','hu':'hu','id':'id','is':'is',
+    'it':'it','ja':'ja','ka':'ka','kn':'kn','ko':'ko','lt':'lt',
+    'lv':'lv','mk':'mk','ml':'ml','mr':'mr','ms':'ms','my':'my',
+    'nb':'no','nl':'nl','pa':'pa','pl':'pl','pt':'pt','ro':'ro',
+    'ru':'ru','si':'si','sk':'sk','sl':'sl','sq':'sq','sr':'sr',
+    'su':'su','sv':'sv','sw':'sw','ta':'ta','te':'te','th':'th',
+    'tl':'tl','tr':'tr','uk':'uk','ur':'ur','vi':'vi','zh':'zh-CN','zu':'zu'
+};
+
+// ── Load PDF.js ────────────────────────────────────────────────────
+const s = document.createElement('script');
+s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+s.onload = () => {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    initApp();
+};
+document.head.appendChild(s);
+
+function initApp() {
+    const isMobile = () => window.innerWidth <= 768;
+    const $ = id => document.getElementById(id);
+
+    // ── State ────────────────────────────────────────────────────
+    let pdfDoc=null, currentPage=1, totalPages=0;
+    let allVoices=[], filteredVoices=[];
+    let activated=false, selectedGender='all';
+    let historyWords=[], selectionText='', selTimer=null;
+
+    // ── Shared elements ──────────────────────────────────────────
+    const bubble        = $('speak-bubble');
+    const bubbleWord    = $('bubble-word');
+    const bubbleLabel   = $('bubble-label');
+    const selectionBar  = $('selection-bar');
+    const selPreview    = $('sel-preview');
+    const btnSpeakSel   = $('btn-speak-sel');
+    const btnDismissSel = $('btn-dismiss-sel');
+
+    // ── Helpers ──────────────────────────────────────────────────
+    const getLangRaw = () => (isMobile() ? $('m-lang-select') : $('lang-select'))?.value || 'en';
+    const getLang    = () => { const r=getLangRaw(); return r==='auto'?'':r; };
+    const getGoogleLang = () => LANG_MAP[getLangRaw()] || 'en';
+    const getVoiceI  = () => parseInt((isMobile() ? $('m-voice-select') : $('voice-select'))?.value) || 0;
+    const getRate    = () => parseFloat((isMobile() ? $('m-rate-slider')  : $('rate-slider'))?.value  || 0.85);
+    const getPitch   = () => parseFloat((isMobile() ? $('m-pitch-slider') : $('pitch-slider'))?.value || 1);
+    const getVol     = () => parseFloat((isMobile() ? $('m-vol-slider')   : $('vol-slider'))?.value   || 1);
+
+    // ── Load voices ──────────────────────────────────────────────
+    function loadVoices() {
+        allVoices = window.speechSynthesis.getVoices();
+        if (!allVoices.length) return;
+        populateVoices();
+    }
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    setTimeout(loadVoices, 300);
+
+    function populateVoices() {
+        const lang = getLang();
+        let voices = lang
+            ? allVoices.filter(v => v.lang.toLowerCase().startsWith(lang.toLowerCase()))
+            : [...allVoices];
+
+        if (selectedGender === 'female') {
+            voices = voices.filter(v => /female|woman|girl|zira|susan|karen|samantha|victoria|moira|fiona|tessa|amelie|alice|anna|petra|google uk english female/i.test(v.name));
+        } else if (selectedGender === 'male') {
+            voices = voices.filter(v => /male|man|boy|daniel|david|mark|jorge|luca|reed|thomas|alex|fred|google uk english male/i.test(v.name));
+        }
+
+        if (!voices.length && lang) voices = allVoices.filter(v => v.lang.toLowerCase().startsWith(lang.toLowerCase()));
+        if (!voices.length) voices = [...allVoices];
+        filteredVoices = voices;
+
+        const hasVoices = filteredVoices.length > 0;
+        const opts = hasVoices
+            ? filteredVoices.map((v,i)=>`<option value="${i}">${v.name} (${v.lang})</option>`).join('')
+            : `<option value="-1">⚠️ No browser voice — Google TTS will be used</option>`;
+
+        ['voice-select','m-voice-select'].forEach(id => { const el=$(id); if(el) el.innerHTML=opts; });
+
+        // Update engine badge
+        const badge = hasVoices
+            ? `<span class="engine-badge browser">🟢 ${filteredVoices.length} browser voice(s)</span>`
+            : `<span class="engine-badge google">🔵 Google TTS (fallback)</span>`;
+        ['voice-info','m-voice-info'].forEach(id => { const el=$(id); if(el) el.outerHTML=badge; });
+    }
+
+    ['lang-select','m-lang-select'].forEach(id => {
+        const el=$(id); if(el) el.onchange = () => { populateVoices(); };
+    });
+
+    // ── Gender tabs ──────────────────────────────────────────────
+    document.querySelectorAll('.gender-tab').forEach(tab => {
+        tab.onclick = () => {
+            const g = tab.dataset.gender;
+            document.querySelectorAll('.gender-tab').forEach(t =>
+                t.classList.toggle('active', t.dataset.gender===g));
+            selectedGender = g;
+            populateVoices();
+        };
+    });
+
+    // ── Sliders ──────────────────────────────────────────────────
+    [['rate-slider','rate-val'],['pitch-slider','pitch-val'],['vol-slider','vol-val'],
+     ['m-rate-slider','m-rate-val'],['m-pitch-slider','m-pitch-val'],['m-vol-slider','m-vol-val']
+    ].forEach(([sid,vid]) => {
+        const sl=$(sid), vl=$(vid);
+        if(sl&&vl) sl.oninput = () => vl.textContent = parseFloat(sl.value).toFixed(1);
+    });
+
+    // ── Activate buttons ─────────────────────────────────────────
+    const doActivate = (inputId) => {
+        activated = true;
+        speak($( inputId )?.value || 'Hello!');
+        setStatus('status',    '✅ Voice activated! Upload your PDF.', '#0d2b1a', '#00e676');
+        setStatus('m-status',  '✅ Voice activated! Upload PDF.',      '#0d2b1a', '#00e676');
+    };
+    $('btn-activate')  ?.addEventListener('click', () => doActivate('test-input'));
+    $('m-btn-activate')?.addEventListener('click', () => doActivate('m-test-input'));
+    $('m-btn-test')    ?.addEventListener('click', () => { activated=true; speak($('m-test-input')?.value||'Hello!'); });
+
+    // ── Mobile nav tabs ──────────────────────────────────────────
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.onclick = () => {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.mobile-page').forEach(p => p.classList.remove('active'));
+            $(tab.dataset.tab)?.classList.add('active');
+        };
+    });
+
+    // ── Upload ───────────────────────────────────────────────────
+    const setupUpload = (areaId, inputId) => {
+        const area=$(areaId), input=$(inputId);
+        if(!area||!input) return;
+        area.addEventListener('click', e => { if(e.target.tagName!=='LABEL') input.click(); });
+        area.ondragover  = e => { e.preventDefault(); area.classList.add('drag'); };
+        area.ondragleave = () => area.classList.remove('drag');
+        area.ondrop = e => { e.preventDefault(); area.classList.remove('drag'); if(e.dataTransfer.files[0]?.type==='application/pdf') loadPDF(e.dataTransfer.files[0]); };
+        input.onchange = e => { if(e.target.files[0]) loadPDF(e.target.files[0]); };
+    };
+    setupUpload('upload-area',   'file-input');
+    setupUpload('m-upload-area', 'm-file-input');
+
+    async function loadPDF(file) {
+        if (!activated) return alert('Tap "🔊 Activate" first!');
+        setStatus('status',   '⏳ Loading PDF...', '#1a1500', '#ffd740');
+        setStatus('m-status', '⏳ Loading PDF...', '#1a1500', '#ffd740');
+        const buf = await file.arrayBuffer();
+        pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+        totalPages = pdfDoc.numPages;
+        currentPage = 1;
+
+        ['upload-area','m-upload-area'].forEach(id => {
+            const el=$(id); if(!el) return;
+            el.innerHTML = `<div style="padding:12px;text-align:center;">
+                <span style="color:var(--success);font-weight:700;">✅ ${file.name}</span><br>
+                <span style="color:var(--muted);font-size:0.8em;">${totalPages} pages loaded</span><br>
+                <label style="color:var(--primary);font-size:0.82em;cursor:pointer;margin-top:6px;display:inline-block;">
+                    🔄 Change PDF<input type="file" accept=".pdf" style="display:none;" onchange="window.__changeFile(this)">
+                </label></div>`;
+        });
+        window.__changeFile = inp => { if(inp.files[0]) loadPDF(inp.files[0]); };
+
+        $('toolbar').style.display = 'block';
+        $('m-toolbar').classList.add('visible');
+        setStatus('status',   `📄 ${totalPages} pages — Click any word!`, '#0d2b1a', '#00e676');
+        setStatus('m-status', `📄 ${totalPages} pages — Tap any word!`,   '#0d2b1a', '#00e676');
+
+        if (isMobile()) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="m-page-reader"]')?.classList.add('active');
+            document.querySelectorAll('.mobile-page').forEach(p => p.classList.remove('active'));
+            $('m-page-reader').classList.add('active');
+        }
+        await renderPage(currentPage);
+        updateNav();
+    }
+
+    // ── Navigation ───────────────────────────────────────────────
+    const goPage = n => {
+        if (!pdfDoc || n<1 || n>totalPages) return;
+        currentPage = n; renderPage(n); updateNav();
+    };
+    $('btn-prev')  ?.addEventListener('click', () => goPage(currentPage-1));
+    $('btn-next')  ?.addEventListener('click', () => goPage(currentPage+1));
+    $('m-btn-prev')?.addEventListener('click', () => goPage(currentPage-1));
+    $('m-btn-next')?.addEventListener('click', () => goPage(currentPage+1));
+
+    function updateNav() {
+        ['page-info','m-page-info'].forEach(id => { const el=$(id); if(el) el.textContent=`Page ${currentPage}/${totalPages}`; });
+        ['btn-prev','m-btn-prev'].forEach(id => { const el=$(id); if(el) el.disabled=currentPage===1; });
+        ['btn-next','m-btn-next'].forEach(id => { const el=$(id); if(el) el.disabled=currentPage===totalPages; });
+    }
+
+    // ── Swipe to change page ─────────────────────────────────────
+    let swipeX=0, swipeY=0;
+    ['pdf-container','m-pdf-container'].forEach(id => {
+        const el=$(id); if(!el) return;
+        el.addEventListener('touchstart', e=>{ swipeX=e.touches[0].clientX; swipeY=e.touches[0].clientY; }, {passive:true});
+        el.addEventListener('touchend', e=>{
+            const dx=e.changedTouches[0].clientX-swipeX;
+            const dy=Math.abs(e.changedTouches[0].clientY-swipeY);
+            if(Math.abs(dx)>65 && dy<45){ dx<0?goPage(currentPage+1):goPage(currentPage-1); }
+        }, {passive:true});
+    });
+
+    // ── Render page ──────────────────────────────────────────────
+    async function renderPage(num) {
+        const ids = isMobile() ? ['m-pdf-container'] : ['pdf-container'];
+        // Always render both containers
+        const allIds = ['pdf-container','m-pdf-container'];
+
+        for (const cid of allIds) {
+            const container=$(cid); if(!container) continue;
+            container.innerHTML='';
+            const page = await pdfDoc.getPage(num);
+            const w = container.clientWidth - 24;
+            const unscaled = page.getViewport({scale:1});
+            const scale = Math.max(1.0, Math.min(2.2, w/unscaled.width));
+            const viewport = page.getViewport({scale});
+
+            const wrapper = document.createElement('div');
+            wrapper.className='page-wrapper';
+            wrapper.style.width=viewport.width+'px';
+            wrapper.style.height=viewport.height+'px';
+
+            const canvas=document.createElement('canvas');
+            canvas.width=viewport.width; canvas.height=viewport.height;
+            await page.render({canvasContext:canvas.getContext('2d'), viewport}).promise;
+
+            const textLayerDiv=document.createElement('div');
+            textLayerDiv.className='textLayer';
+
+            wrapper.appendChild(canvas);
+            wrapper.appendChild(textLayerDiv);
+            container.appendChild(wrapper);
+
+            const textContent=await page.getTextContent();
+            textContent.items.forEach(item=>{
+                if(!item.str.trim()) return;
+                const tx=pdfjsLib.Util.transform(viewport.transform, item.transform);
+                const span=document.createElement('span');
+                span.textContent=item.str;
+                span.style.left=tx[4]+'px';
+                span.style.top=(tx[5]-item.height*scale)+'px';
+                span.style.fontSize=Math.abs(tx[0])+'px';
+                span.style.fontFamily=item.fontName||'sans-serif';
+                span.title='Click/tap = word | Drag/hold = sentence';
+
+                // Desktop click
+                span.onclick=e=>{
+                    if(window.getSelection().toString().trim().length>1) return;
+                    e.stopPropagation();
+                    const word=getWordAt(e, span);
+                    if(word){ highlightSpan(span); speak(word,false); }
+                };
+
+                // Mobile touch
+                let touchTimer;
+                span.addEventListener('touchstart',()=>{ span.classList.add('active'); touchTimer=setTimeout(()=>span.classList.remove('active'),600); },{passive:true});
+                span.addEventListener('touchend', e=>{
+                    clearTimeout(touchTimer); span.classList.remove('active');
+                    if(window.getSelection().toString().trim().length>1) return;
+                    e.preventDefault();
+                    const t=e.changedTouches[0];
+                    const word=getWordAt({clientX:t.clientX,clientY:t.clientY}, span);
+                    if(word){ highlightSpan(span); speak(word,false); }
+                });
+
+                textLayerDiv.appendChild(span);
+            });
+        }
+        hideSelBar();
+    }
+
+    // ── Word extraction ──────────────────────────────────────────
+    function getWordAt(e, span) {
+        if(document.caretRangeFromPoint){
+            const range=document.caretRangeFromPoint(e.clientX, e.clientY);
+            if(range?.startContainer?.nodeType===Node.TEXT_NODE){
+                const txt=range.startContainer.textContent, off=range.startOffset;
+                let s=off, end=off;
+                while(s>0&&/\S/.test(txt[s-1])) s--;
+                while(end<txt.length&&/\S/.test(txt[end])) end++;
+                const word=txt.slice(s,end).replace(/[^\p{L}'-]/gu,'');
+                if(word) return word;
+            }
+        }
+        return span.textContent.trim().split(/\s+/)[0].replace(/[^\p{L}'-]/gu,'')||span.textContent.trim();
+    }
+
+    // ── Highlight ────────────────────────────────────────────────
+    let lastSpan=null;
+    function highlightSpan(span){
+        if(lastSpan) lastSpan.classList.remove('clicked');
+        span.classList.add('clicked'); lastSpan=span;
+        setTimeout(()=>span.classList.remove('clicked'),1200);
+    }
+
+    // ── Selection bar ────────────────────────────────────────────
+    document.addEventListener('mouseup', detectSelection);
+    document.addEventListener('touchend', detectSelection);
+    function detectSelection(){
+        clearTimeout(selTimer);
+        selTimer=setTimeout(()=>{
+            const text=window.getSelection().toString().trim();
+            if(text&&text.length>1){
+                selectionText=text;
+                selPreview.textContent=text.length>35?text.slice(0,35)+'…':text;
+                selectionBar.classList.add('visible');
+            } else hideSelBar();
+        },250);
+    }
+    btnSpeakSel.onclick=()=>{ if(selectionText){ speak(selectionText,true); hideSelBar(); } };
+    btnDismissSel.onclick=()=>{ hideSelBar(); window.getSelection().removeAllRanges(); };
+    function hideSelBar(){ selectionBar.classList.remove('visible'); selectionText=''; }
+
+    // ── History ──────────────────────────────────────────────────
+    function addHistory(text){
+        const label=text.length>22?text.slice(0,22)+'…':text;
+        if(historyWords[0]?.text===text) return;
+        historyWords=[{text,label},...historyWords.filter(w=>w.text!==text)].slice(0,40);
+        const html=historyWords.map(w=>
+            `<div class="history-chip" onclick="window.__speakH(${JSON.stringify(w.text)})">🔊 ${w.label}</div>`
+        ).join('');
+        ['history-list','m-history-list'].forEach(id=>{ const el=$(id); if(el) el.innerHTML=html; });
+    }
+    window.__speakH=text=>speak(text,text.includes(' '));
+
+    // ── SPEAK — Browser TTS first, Google TTS fallback ───────────
+    let bubbleTimer;
+    function speak(text, isSentence=false){
+        if(!text) return;
+        window.speechSynthesis.cancel();
+
+        const voiceIdx=getVoiceI();
+        const hasBrowserVoice = filteredVoices.length>0 && voiceIdx>=0 && filteredVoices[voiceIdx];
+
+        if(hasBrowserVoice){
+            // ── Browser TTS ──
+            const utter=new SpeechSynthesisUtterance(text);
+            utter.voice  = filteredVoices[voiceIdx];
+            utter.rate   = getRate();
+            utter.pitch  = getPitch();
+            utter.volume = getVol();
+            utter.lang   = filteredVoices[voiceIdx].lang;
+            utter.onerror= e=>{
+                console.warn('Browser TTS failed, using Google TTS');
+                googleTTS(text);
+            };
+            window.speechSynthesis.speak(utter);
+        } else {
+            // ── Google TTS fallback ──
+            googleTTS(text);
+        }
+
+        showBubble(text, isSentence);
+        addHistory(text);
+    }
+
+    // ── Google Translate TTS (free, no API key needed) ───────────
+    function googleTTS(text){
+        try {
+            const lang = getGoogleLang();
+            const encoded = encodeURIComponent(text.slice(0,200));
+            const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=${lang}&client=tw-ob`;
+            const audio = new Audio(url);
+            audio.volume = getVol();
+            audio.playbackRate = Math.min(getRate(), 1.8);
+            audio.play().catch(()=>{
+                console.error('Google TTS also failed. Ensure HTTPS or use a proxy.');
+            });
+        } catch(e) { console.error('Google TTS error', e); }
+    }
+
+    // ── Show bubble ──────────────────────────────────────────────
+    function showBubble(text, isSentence){
+        bubbleLabel.textContent = isSentence ? '🔊 Reading Sentence' : '🔊 Speaking Word';
+        bubbleWord.textContent  = text.length>50 ? text.slice(0,50)+'…' : text;
+        bubble.classList.add('show');
+        clearTimeout(bubbleTimer);
+        bubbleTimer=setTimeout(()=>bubble.classList.remove('show'),
+            isSentence ? Math.max(3000, text.length*60) : 2500);
+    }
+
+    // ── Status ───────────────────────────────────────────────────
+    function setStatus(id, msg, bg, color){
+        const el=$(id); if(!el) return;
+        el.style.cssText=`display:block;background:${bg};color:${color};padding:10px 16px;border-radius:10px;font-weight:600;font-size:0.85em;text-align:center;margin-bottom:10px;`;
+        el.textContent=msg;
+    }
+}
+</script>
+</body>
+</html>
